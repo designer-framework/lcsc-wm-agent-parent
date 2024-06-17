@@ -42,38 +42,30 @@ public class SpringBeanCreateTimeCounterInterceptor {
             Stack<InvokeTrace> invokeTraces = SpringBeanCreateTimeHolder.creatingBeanMap.computeIfAbsent(invokeTrace.beanName, beanName -> new Stack<>());
             invokeTraces.push(invokeTrace);
 
-            Root treeRoot = SpringBeanCreateTimeHolder.creatingTree;
+            Root treeRoot = SpringBeanCreateTimeHolder.creatingRoot;
+
             //首次初始化
             if (treeRoot == null) {
-                Root creatingTree = (SpringBeanCreateTimeHolder.creatingTree = new Root());
 
-                Node preNode = new Node(invokeTrace);
-                preNode.pre = preNode;
+                Node headNode = new Node(invokeTrace);
+                headNode.pre = headNode;
 
-                Node nextNode = new Node();
-                nextNode.pre = preNode;
-                preNode.next = nextNode;
-
-                creatingTree.head = preNode;
-                creatingTree.tail = nextNode;
+                Root creatingTree = (SpringBeanCreateTimeHolder.creatingRoot = new Root());
+                creatingTree.head = headNode;
+                creatingTree.tail = headNode;
 
                 creatingTree.deep++;
 
-                //初始化尾节点
             } else {
 
-                Node tailNode = treeRoot.tail;
+                Node tailNode = new Node();
                 tailNode.trace = invokeTrace;
-
-                Node nextNode = new Node();
-                nextNode.pre = tailNode;
-                tailNode.next = nextNode;
-                treeRoot.tail = nextNode;
+                tailNode.pre = treeRoot.tail;
+                treeRoot.tail = tailNode;
 
                 treeRoot.deep++;
 
             }
-
             SpringBeanCreateTimeHolder.creatingBeanTrace.push(invokeTrace.beanName);
         }
     }
@@ -102,12 +94,13 @@ public class SpringBeanCreateTimeCounterInterceptor {
             }
 
             //Bean创建成功, 计算各bean的初始化时间
-            int deep = SpringBeanCreateTimeHolder.creatingTree.deep - 1;
-            if (SpringBeanCreateTimeHolder.creatingTree.head.trace.beanName.equals(createdBean) && deep == 0) {
+            int deep = SpringBeanCreateTimeHolder.creatingRoot.deep - 1;
+            if (SpringBeanCreateTimeHolder.creatingRoot.head.trace.beanName.equals(createdBean) && deep == 0) {
+                SpringBeanCreateTimeHolder.createdRoots.offer(SpringBeanCreateTimeHolder.creatingRoot);
+                SpringBeanCreateTimeHolder.creatingRoot = null;
                 System.out.println("Root初始化完成: " + createdBean);
-                SpringBeanCreateTimeHolder.creatingTree = null;
             } else {
-                SpringBeanCreateTimeHolder.creatingTree.deep = deep;
+                SpringBeanCreateTimeHolder.creatingRoot.deep = deep;
             }
 
         }

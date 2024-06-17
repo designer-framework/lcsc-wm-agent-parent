@@ -21,4 +21,11 @@ public class Node {
         this.trace = trace;
     }
 
+    /**
+     * 计算当前节点真实耗时
+     */
+    public void computeReelCost() {
+        trace.realCost = pre.trace.stop - next.trace.start;
+    }
+
 }

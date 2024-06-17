@@ -14,7 +14,7 @@ spring:
 app:
   id: ${spring.application.name}
 apollo:
-  cache-dir: 'D:\TeamWork\lcsc-wm-agent-example\lcsc-wm-agent-web\src\main\resources\tests'
+  cache-dir: 'D:\TeamWork\lcsc-wm-agent-parent\lcsc-wm-agent-web\src\main\resources\tests'
   autoUpdateInjectedSpringProperties: true
   access-key:
     secret: d7e98dedace8409fca9c956b29cda4b579681f33f54e1ea77ec5589c28419001

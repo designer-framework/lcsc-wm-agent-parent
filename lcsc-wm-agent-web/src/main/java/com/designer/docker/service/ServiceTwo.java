@@ -12,6 +12,6 @@ import org.springframework.stereotype.Service;
 public class ServiceTwo {
 
     @Autowired
-    private ServiceOne serviceOne;
+    private SmartInitializingSingletonService smartInitializingSingletonService;
 
 }

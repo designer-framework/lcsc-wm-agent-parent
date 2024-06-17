@@ -24,8 +24,11 @@ public class InvokeTrace {
 
     public long cost;
 
+    public long realCost;
+
     @Override
     public String toString() {
-        return MessageFormat.format("Bean{0}加载完毕, 耗时: {1}", beanName, cost);
+        return MessageFormat.format("Bean[{0}]加载耗时: {1}/ms", beanName, cost);
     }
+
 }

@@ -16,4 +16,9 @@ public class Root {
 
     public Node tail;
 
+    @Override
+    public String toString() {
+        return head.trace.beanName;
+    }
+
 }
