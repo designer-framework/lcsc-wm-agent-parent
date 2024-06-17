@@ -29,10 +29,25 @@ public class IndexController implements ApplicationRunner {
 
             Node head = root.head;
             Node tail = root.tail;
-            root.head.trace.realCost = head.trace.start - tail.trace.stop;
 
-            while ((head = head.next) != null) {
-                root.head.computeReelCost();
+            if (head == tail) {
+
+                //无依赖对象
+                root.head.trace.realCost = head.trace.start - tail.trace.stop;
+                return;
+
+            } else {
+
+                //
+                head.trace.realCost = (tail.trace.stop - tail.next.trace.start) + (tail.trace.start - tail.pre.trace.stop);
+
+                Node tempHead;
+                while (true) {
+                    if ((tempHead = head.next) != null) {
+                        root.head.trace.realCost = head.trace.start - tail.trace.stop;
+                    }
+                    root.head.computeReelCost();
+                }
             }
 
         });

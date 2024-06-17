@@ -58,10 +58,14 @@ public class SpringBeanCreateTimeCounterInterceptor {
 
             } else {
 
-                Node tailNode = new Node();
-                tailNode.trace = invokeTrace;
-                tailNode.pre = treeRoot.tail;
-                treeRoot.tail = tailNode;
+                Node oldTailNode = treeRoot.tail;
+
+                Node newTailNode = new Node();
+                newTailNode.trace = invokeTrace;
+                newTailNode.pre = treeRoot.tail;
+
+                treeRoot.tail = newTailNode;
+                oldTailNode.next = newTailNode;
 
                 treeRoot.deep++;
 
