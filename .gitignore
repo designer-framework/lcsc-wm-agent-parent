@@ -25,6 +25,9 @@ Thumbs.db
 *.*~
 ~*.*
 
+*.class
+target
+
 logs
 
 
