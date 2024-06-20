@@ -2,6 +2,7 @@ package com.lcsc.wm.agent.interceptor;
 
 import com.lcsc.wm.agent.model.InvokeTrace;
 import com.lcsc.wm.agent.queue.Root;
+import lombok.Setter;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -31,6 +32,7 @@ public class SpringBeanCreateTimeHolder {
     /**
      *
      */
+    @Setter
     public static Root creatingRoot;
 
     /**

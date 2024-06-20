@@ -42,42 +42,33 @@ public class SpringBeanCreateTimeCounterInterceptor {
             Stack<InvokeTrace> invokeTraces = SpringBeanCreateTimeHolder.creatingBeanMap.computeIfAbsent(invokeTrace.beanName, beanName -> new Stack<>());
             invokeTraces.push(invokeTrace);
 
-            Root treeRoot = SpringBeanCreateTimeHolder.creatingRoot;
+            Root creatingRoot = SpringBeanCreateTimeHolder.creatingRoot;
 
             //首次初始化
-            if (treeRoot == null) {
+            if (creatingRoot == null) {
 
                 Node headNode = new Node(invokeTrace);
                 headNode.pre = headNode;
 
-                Root creatingTree = (SpringBeanCreateTimeHolder.creatingRoot = new Root());
+                Root creatingTree = (creatingRoot = (SpringBeanCreateTimeHolder.creatingRoot = new Root()));
                 creatingTree.head = headNode;
                 creatingTree.tail = headNode;
 
-                //creatingTree.beforeQueue = true;
-                creatingTree.deepUp();
-
             } else {
 
-                Node oldTailNode = treeRoot.tail;
+                Node oldTailNode = creatingRoot.tail;
 
                 Node newTailNode = new Node();
                 newTailNode.trace = invokeTrace;
-                newTailNode.pre = treeRoot.tail;
+                newTailNode.pre = creatingRoot.tail;
 
-                treeRoot.tail = newTailNode;
+                creatingRoot.tail = newTailNode;
                 oldTailNode.next = newTailNode;
 
-                //入栈
-                if (treeRoot.beforeIsEnqueue()) {
-                    treeRoot.levelUp();
-                    treeRoot.deepUp();
-                    //已出栈
-                } else {
-                    treeRoot.levelDown();
-                }
-
             }
+
+            //入栈
+            invokeTrace.setDeep(creatingRoot.deepUp());
             SpringBeanCreateTimeHolder.creatingBeanTrace.push(invokeTrace.beanName);
         }
     }
@@ -91,7 +82,6 @@ public class SpringBeanCreateTimeCounterInterceptor {
 
             //出栈
             Stack<InvokeTrace> invokeTraces = SpringBeanCreateTimeHolder.creatingBeanMap.get(createdBean);
-
 
             InvokeTrace invokeTrace = invokeTraces.pop();
             invokeTrace.stop = System.currentTimeMillis();
@@ -107,11 +97,11 @@ public class SpringBeanCreateTimeCounterInterceptor {
 
             //Bean创建成功
             Root creatingRoot = SpringBeanCreateTimeHolder.creatingRoot;
+            //Bean出栈
             creatingRoot.deepDown();
-
-            //RootBean出栈
+            //RootBean创建完成
             if (creatingRoot.head.trace.beanName.equals(createdBean) && creatingRoot.currentIsDequeue()) {
-                SpringBeanCreateTimeHolder.createdRoots.offer(SpringBeanCreateTimeHolder.creatingRoot);
+                SpringBeanCreateTimeHolder.createdRoots.offer(creatingRoot);
                 SpringBeanCreateTimeHolder.creatingRoot = null;
                 System.out.println("Root初始化完成: " + createdBean);
             }

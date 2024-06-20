@@ -10,11 +10,10 @@ import lombok.Data;
 @Data
 public class Root {
 
-    public int level = 0;
     public Node head;
     public Node tail;
-    private boolean beforeIsEnqueue = true;
     private int deep = 0;
+    private String beforeCreated;
 
     @Override
     public String toString() {
@@ -25,16 +24,8 @@ public class Root {
         return tail.trace.stop - head.trace.start;
     }
 
-    public void levelUp() {
-        level++;
-    }
-
-    public void levelDown() {
-        level--;
-    }
-
-    public void deepUp() {
-        deep++;
+    public int deepUp() {
+        return ++deep;
     }
 
     /**
@@ -42,14 +33,6 @@ public class Root {
      */
     public void deepDown() {
         deep--;
-        if (deep == 0) {
-            beforeIsEnqueue = false;
-            levelDown();
-        }
-    }
-
-    public boolean beforeIsEnqueue() {
-        return beforeIsEnqueue;
     }
 
     public boolean currentIsDequeue() {

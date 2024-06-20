@@ -1,6 +1,7 @@
 package com.lcsc.wm.agent.model;
 
 import lombok.Data;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 import sun.misc.Contended;
 
@@ -25,6 +26,9 @@ public class InvokeTrace {
     public long cost;
 
     public long realCost;
+
+    @Setter
+    public int deep;
 
     @Override
     public String toString() {

@@ -21,7 +21,7 @@ public class SmartInitializingSingletonService implements SmartInitializingSingl
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        Thread.sleep(3000);
+        Thread.sleep(1000);
     }
 
 }

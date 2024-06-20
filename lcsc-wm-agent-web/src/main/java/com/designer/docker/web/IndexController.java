@@ -25,8 +25,11 @@ public class IndexController implements ApplicationRunner {
 
     @RequestMapping("/sort")
     public void sort() {
-        List<Root> sortedRoots = SpringBeanCreateTimeHolder.createdRoots.stream().sorted(Comparator.comparingLong(Root::getCostTime).reversed())
-                .map(this::calcReelCostTime).collect(Collectors.toList());
+        List<Root> sortedRoots = SpringBeanCreateTimeHolder.createdRoots.stream()
+                .map(this::calcReelCostTime)
+                .sorted(Comparator.comparingLong(Root::getCostTime).reversed())
+                .collect(Collectors.toList());
+
     }
 
     private Root calcReelCostTime(Root root) {

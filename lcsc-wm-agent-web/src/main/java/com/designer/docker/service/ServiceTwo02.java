@@ -10,14 +10,14 @@ import org.springframework.stereotype.Service;
  * @date : 2024-06-16 23:02
  */
 @Service
-public class ServiceTwo implements InitializingBean {
+public class ServiceTwo02 implements InitializingBean {
 
     @Autowired
     private SmartInitializingSingletonService smartInitializingSingletonService;
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        Thread.sleep(500);
+        Thread.sleep(200);
     }
 
 }
