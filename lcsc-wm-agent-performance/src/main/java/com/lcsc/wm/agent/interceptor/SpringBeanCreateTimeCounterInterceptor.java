@@ -54,7 +54,8 @@ public class SpringBeanCreateTimeCounterInterceptor {
                 creatingTree.head = headNode;
                 creatingTree.tail = headNode;
 
-                creatingTree.deep++;
+                //creatingTree.beforeQueue = true;
+                creatingTree.deepUp();
 
             } else {
 
@@ -67,7 +68,14 @@ public class SpringBeanCreateTimeCounterInterceptor {
                 treeRoot.tail = newTailNode;
                 oldTailNode.next = newTailNode;
 
-                treeRoot.deep++;
+                //入栈
+                if (treeRoot.beforeIsEnqueue()) {
+                    treeRoot.levelUp();
+                    treeRoot.deepUp();
+                    //已出栈
+                } else {
+                    treeRoot.levelDown();
+                }
 
             }
             SpringBeanCreateTimeHolder.creatingBeanTrace.push(invokeTrace.beanName);
@@ -97,14 +105,15 @@ public class SpringBeanCreateTimeCounterInterceptor {
                 SpringBeanCreateTimeHolder.creatingBeanMap.remove(invokeTrace.beanName);
             }
 
-            //Bean创建成功, 计算各bean的初始化时间
-            int deep = SpringBeanCreateTimeHolder.creatingRoot.deep - 1;
-            if (SpringBeanCreateTimeHolder.creatingRoot.head.trace.beanName.equals(createdBean) && deep == 0) {
+            //Bean创建成功
+            Root creatingRoot = SpringBeanCreateTimeHolder.creatingRoot;
+            creatingRoot.deepDown();
+
+            //RootBean出栈
+            if (creatingRoot.head.trace.beanName.equals(createdBean) && creatingRoot.currentIsDequeue()) {
                 SpringBeanCreateTimeHolder.createdRoots.offer(SpringBeanCreateTimeHolder.creatingRoot);
                 SpringBeanCreateTimeHolder.creatingRoot = null;
                 System.out.println("Root初始化完成: " + createdBean);
-            } else {
-                SpringBeanCreateTimeHolder.creatingRoot.deep = deep;
             }
 
         }

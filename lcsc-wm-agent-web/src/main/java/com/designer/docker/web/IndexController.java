@@ -1,6 +1,7 @@
 package com.designer.docker.web;
 
 import com.lcsc.wm.agent.interceptor.SpringBeanCreateTimeHolder;
+import com.lcsc.wm.agent.model.InvokeTrace;
 import com.lcsc.wm.agent.queue.Node;
 import com.lcsc.wm.agent.queue.Root;
 import lombok.extern.slf4j.Slf4j;
@@ -9,8 +10,9 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletResponse;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @description:
@@ -21,38 +23,44 @@ import java.util.concurrent.LinkedBlockingQueue;
 @RestController
 public class IndexController implements ApplicationRunner {
 
-    @RequestMapping("/test")
-    public void export(HttpServletResponse httpServletResponse) {
-        LinkedBlockingQueue<Root> createdRoots = SpringBeanCreateTimeHolder.createdRoots;
+    @RequestMapping("/sort")
+    public void sort() {
+        List<Root> sortedRoots = SpringBeanCreateTimeHolder.createdRoots.stream().sorted(Comparator.comparingLong(Root::getCostTime).reversed())
+                .map(this::calcReelCostTime).collect(Collectors.toList());
+    }
 
-        createdRoots.parallelStream().forEach(root -> {
+    private Root calcReelCostTime(Root root) {
+        Node head = root.head;
+        Node tail = root.tail;
+        //简单Bean
+        if (head == tail) {
+            InvokeTrace invokeTrace = root.tail.trace;
+            invokeTrace.setRealCost(root.tail.trace.cost);
 
-            Node head = root.head;
-            Node tail = root.tail;
+            //复杂Bean
+        } else {
+            InvokeTrace invokeTrace = root.tail.trace;
+            invokeTrace.setRealCost(root.tail.trace.cost);
 
-            if (head == tail) {
-
-                //无依赖对象
-                root.head.trace.realCost = head.trace.start - tail.trace.stop;
-                return;
-
-            } else {
+            //累计耗时
+            long sumReelCostTime = invokeTrace.getRealCost();
+            Node currNode = tail;
+            while ((currNode = currNode.pre) != null) {
 
                 //
-                head.trace.realCost = (tail.trace.stop - tail.next.trace.start) + (tail.trace.start - tail.pre.trace.stop);
+                InvokeTrace currInvokeTrace = currNode.trace;
+                //当前Bean加载真实耗时
+                currInvokeTrace.setRealCost(currInvokeTrace.cost - sumReelCostTime);
+                sumReelCostTime += currInvokeTrace.getRealCost();
 
-                Node tempHead;
-                while (true) {
-                    if ((tempHead = head.next) != null) {
-                        root.head.trace.realCost = head.trace.start - tail.trace.stop;
-                    }
-                    root.head.computeReelCost();
+                if (currNode == currNode.pre) {
+                    break;
                 }
+
             }
 
-        });
-
-        Root[] array = createdRoots.toArray(new Root[]{});
+        }
+        return root;
     }
 
     @Override
