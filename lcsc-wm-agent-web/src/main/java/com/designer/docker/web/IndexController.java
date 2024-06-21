@@ -30,6 +30,7 @@ public class IndexController implements ApplicationRunner {
                 .sorted(Comparator.comparingLong(Root::getCostTime).reversed())
                 .collect(Collectors.toList());
 
+        Root root = sortedRoots.get(0);
     }
 
     private Root calcReelCostTime(Root root) {
@@ -42,11 +43,11 @@ public class IndexController implements ApplicationRunner {
 
             //复杂Bean
         } else {
-            InvokeTrace invokeTrace = root.tail.trace;
-            invokeTrace.setRealCost(root.tail.trace.cost);
+            InvokeTrace tailInvokeTrace = tail.trace;
+            tailInvokeTrace.setRealCost(tailInvokeTrace.stop - tailInvokeTrace.start);
 
             //累计耗时
-            long sumReelCostTime = invokeTrace.getRealCost();
+            long sumReelCostTime = tailInvokeTrace.getCost();
             Node currNode = tail;
             while ((currNode = currNode.pre) != null) {
 
