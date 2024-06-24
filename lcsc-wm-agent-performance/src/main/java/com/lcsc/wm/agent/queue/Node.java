@@ -1,7 +1,9 @@
 package com.lcsc.wm.agent.queue;
 
 import com.lcsc.wm.agent.model.InvokeTrace;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * @description:
@@ -16,6 +18,10 @@ public class Node {
     public Node pre;
 
     public Node next;
+
+    @Getter
+    @Setter
+    private boolean isRoot;
 
     public Node(InvokeTrace trace) {
         this.trace = trace;

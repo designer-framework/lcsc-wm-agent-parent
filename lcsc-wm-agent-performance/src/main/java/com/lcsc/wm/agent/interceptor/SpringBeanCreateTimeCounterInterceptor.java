@@ -101,8 +101,10 @@ public class SpringBeanCreateTimeCounterInterceptor {
             creatingRoot.deepDown();
             //RootBean创建完成
             if (creatingRoot.head.trace.beanName.equals(createdBean) && creatingRoot.currentIsDequeue()) {
+
                 SpringBeanCreateTimeHolder.createdRoots.offer(creatingRoot);
                 SpringBeanCreateTimeHolder.creatingRoot = null;
+                creatingRoot.head.setRoot(true);
                 System.out.println("Root初始化完成: " + createdBean);
             }
 

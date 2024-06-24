@@ -30,10 +30,15 @@ public class IndexController implements ApplicationRunner {
                 .sorted(Comparator.comparingLong(Root::getCostTime).reversed())
                 .collect(Collectors.toList());
 
-        Root root = sortedRoots.get(0);
+        StringBuffer treeBuffer = new StringBuffer();
+        sortedRoots.stream()
+                .map(this::calcReelCostTimeTree)
+                .forEach(treeBuffer::append);
+        log.error("TraceTree: \n{}", treeBuffer);
     }
 
     private Root calcReelCostTime(Root root) {
+        StringBuffer chain = new StringBuffer();
         Node head = root.head;
         Node tail = root.tail;
         //简单Bean
@@ -48,6 +53,7 @@ public class IndexController implements ApplicationRunner {
 
             //累计耗时
             long sumReelCostTime = tailInvokeTrace.getCost();
+
             Node currNode = tail;
             while ((currNode = currNode.pre) != null) {
 
@@ -64,7 +70,57 @@ public class IndexController implements ApplicationRunner {
             }
 
         }
+
+        root.setTraceString(chain.toString());
         return root;
+    }
+
+    private String calcReelCostTimeTree(Root root) {
+        StringBuilder chain = new StringBuilder();
+        Node head = root.head;
+        Node tail = root.tail;
+
+        //简单Bean
+        if (head == tail) {
+            InvokeTrace tailTrace = root.tail.trace;
+
+
+            chain.append("|-->");
+            chain.append(tailTrace.beanName);
+            chain.append("耗时: ");
+            chain.append(tailTrace.realCost);
+            chain.append("/ms");
+            chain.append("\n");
+
+            //复杂Bean
+        } else {
+
+            Node headNode = head;
+            chain.append("|-->");
+            chain.append(headNode.trace.beanName);
+            chain.append("耗时: ");
+            chain.append(headNode.trace.realCost);
+            chain.append("/ms");
+            chain.append("\n");
+            while ((headNode = headNode.next) != null) {
+
+                InvokeTrace headTrace = headNode.trace;
+                chain.append("|");
+                for (int i = 0; i < headTrace.deep; i++) {
+                    chain.append(" ").append(" ").append(" ").append(" ");
+                }
+                chain.append("> ");
+                chain.append(headTrace.beanName);
+                chain.append("耗时: ");
+                chain.append(headTrace.realCost);
+                chain.append("/ms");
+                chain.append("\n");
+
+            }
+
+        }
+
+        return chain.toString();
     }
 
     @Override

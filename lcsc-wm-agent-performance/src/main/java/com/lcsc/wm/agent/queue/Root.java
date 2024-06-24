@@ -13,12 +13,7 @@ public class Root {
     public Node head;
     public Node tail;
     private int deep = 0;
-    private String beforeCreated;
-
-    @Override
-    public String toString() {
-        return head.trace.beanName;
-    }
+    private String traceString;
 
     public long getCostTime() {
         return tail.trace.stop - head.trace.start;
@@ -37,6 +32,11 @@ public class Root {
 
     public boolean currentIsDequeue() {
         return deep == 0;
+    }
+
+    @Override
+    public String toString() {
+        return traceString;
     }
 
 }
