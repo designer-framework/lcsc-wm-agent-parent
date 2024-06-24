@@ -37,7 +37,7 @@
     <modules>
         <module>lcsc-wm-agent-web</module>
         <module>lcsc-wm-agent-main</module>
-        <module>lcsc-wm-agent-performance</module>
+        <module>lcsc-wm-agent-performance-new</module>
     </modules>
 
     <dependencies>

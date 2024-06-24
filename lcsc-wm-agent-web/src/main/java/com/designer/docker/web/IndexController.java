@@ -1,3 +1,4 @@
+/*
 package com.designer.docker.web;
 
 import com.lcsc.wm.agent.interceptor.SpringBeanCreateTimeHolder;
@@ -14,11 +15,13 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+*/
 /**
  * @description:
  * @author: Designer
  * @date : 2023-10-18 23:40
- */
+ *//*
+
 @Slf4j
 @RestController
 public class IndexController implements ApplicationRunner {
@@ -129,3 +132,4 @@ public class IndexController implements ApplicationRunner {
     }
 
 }
+*/

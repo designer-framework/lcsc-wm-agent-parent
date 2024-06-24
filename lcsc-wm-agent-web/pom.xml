@@ -73,7 +73,7 @@
 
         <dependency>
             <groupId>com.lcsc</groupId>
-            <artifactId>lcsc-wm-agent-performance</artifactId>
+            <artifactId>lcsc-wm-agent-performance-new</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -84,16 +84,19 @@
             <groupId>com.taobao.arthas</groupId>
             <artifactId>arthas-agent</artifactId>
             <version>3.7.2</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.taobao.arthas</groupId>
             <artifactId>arthas-core</artifactId>
             <version>3.7.2</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.taobao.arthas</groupId>
             <artifactId>arthas-spy</artifactId>
             <version>3.7.2</version>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 
