@@ -25,6 +25,30 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.ctrip.framework.apollo</groupId>
+            <artifactId>apollo-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.xuxueli</groupId>
+            <artifactId>xxl-job-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -39,64 +63,34 @@
             <artifactId>commons-io</artifactId>
             <version>2.16.1</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <!--<dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>-->
 
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>bytekit-core</artifactId>
-            <version>0.1.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+            <groupId>io.github.linyimin0812</groupId>
+            <artifactId>spring-profiler-starter</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.ctrip.framework.apollo</groupId>
-            <artifactId>apollo-client</artifactId>
+            <groupId>io.github.linyimin0812</groupId>
+            <artifactId>spring-profiler-agent</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.xuxueli</groupId>
-            <artifactId>xxl-job-core</artifactId>
+            <groupId>io.github.linyimin0812</groupId>
+            <artifactId>spring-profiler-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-openfeign</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.lcsc</groupId>
-            <artifactId>lcsc-wm-agent-performance-new</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <groupId>io.github.linyimin0812</groupId>
+            <artifactId>spring-profiler-bridge</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
+            <groupId>io.github.linyimin0812</groupId>
+            <artifactId>spring-profiler-common</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.taobao.arthas</groupId>
-            <artifactId>arthas-agent</artifactId>
-            <version>3.7.2</version>
-            <optional>true</optional>
+            <groupId>io.github.linyimin0812</groupId>
+            <artifactId>spring-profiler-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.taobao.arthas</groupId>
-            <artifactId>arthas-core</artifactId>
-            <version>3.7.2</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>com.taobao.arthas</groupId>
-            <artifactId>arthas-spy</artifactId>
-            <version>3.7.2</version>
-            <optional>true</optional>
+            <groupId>io.github.linyimin0812</groupId>
+            <artifactId>spring-profiler-extension</artifactId>
         </dependency>
     </dependencies>
 

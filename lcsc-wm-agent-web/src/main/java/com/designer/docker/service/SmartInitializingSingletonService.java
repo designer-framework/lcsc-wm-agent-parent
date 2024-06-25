@@ -1,6 +1,5 @@
 package com.designer.docker.service;
 
-import lombok.SneakyThrows;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.stereotype.Service;
@@ -13,10 +12,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class SmartInitializingSingletonService implements SmartInitializingSingleton, InitializingBean {
 
-    @SneakyThrows
     @Override
     public void afterSingletonsInstantiated() {
-        Thread.sleep(3000);
+        long start = System.currentTimeMillis();
+        while ((System.currentTimeMillis() - start) < 3625) {
+        }
     }
 
     @Override

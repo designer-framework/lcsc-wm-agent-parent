@@ -19,80 +19,32 @@
 
     <dependencies>
         <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.16.1</version>
+            <groupId>io.github.linyimin0812</groupId>
+            <artifactId>spring-profiler-starter</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.30</version>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>bytekit-core</artifactId>
-            <version>0.1.2</version>
-        </dependency>
-        <dependency>
-            <groupId>net.bytebuddy</groupId>
-            <artifactId>byte-buddy-agent</artifactId>
-            <version>1.14.12</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-            <version>5.2.15.RELEASE</version>
-            <optional>true</optional>
-        </dependency>
-
-
         <dependency>
             <groupId>io.github.linyimin0812</groupId>
             <artifactId>spring-profiler-agent</artifactId>
-            <version>${spring-profiler.version}</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.github.linyimin0812</groupId>
             <artifactId>spring-profiler-api</artifactId>
-            <version>${spring-profiler.version}</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.github.linyimin0812</groupId>
             <artifactId>spring-profiler-bridge</artifactId>
-            <version>${spring-profiler.version}</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.github.linyimin0812</groupId>
             <artifactId>spring-profiler-common</artifactId>
-            <version>${spring-profiler.version}</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.github.linyimin0812</groupId>
             <artifactId>spring-profiler-core</artifactId>
-            <version>${spring-profiler.version}</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.github.linyimin0812</groupId>
             <artifactId>spring-profiler-extension</artifactId>
-            <version>2.0.8</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.github.linyimin0812</groupId>
-            <artifactId>spring-profiler-starter</artifactId>
-            <version>2.0.8</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-shade-plugin</artifactId>
-            <version>3.2.4</version>
         </dependency>
     </dependencies>
 
@@ -111,11 +63,8 @@
                         </manifest>
                         <manifestEntries>
                             <Premain-Class>
-                                com.lcsc.wm.agent.attach.PreMain
+                                com.lcsc.wm.agent.agent.AgentMain
                             </Premain-Class>
-                            <Agent-Class>
-                                com.lcsc.wm.agent.attach.AgentMain
-                            </Agent-Class>
                             <Can-Redefine-Classes>true</Can-Redefine-Classes>
                             <Can-Retransform-Classes>true</Can-Retransform-Classes>
                         </manifestEntries>

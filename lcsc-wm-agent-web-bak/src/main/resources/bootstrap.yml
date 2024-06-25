@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: application-consumer
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      username: nacos
+      password: nacos
+      discovery:
+        server-addr: 192.168.186.128:8848
+        namespace: d2ca62d0-2fcb-4155-b38e-30f6f908caf1
+
+app:
+  id: ${spring.application.name}
+apollo:
+  cache-dir: 'D:\TeamWork\lcsc-wm-agent-parent\lcsc-wm-agent-web\src\main\resources\tests'
+  autoUpdateInjectedSpringProperties: true
+  access-key:
+    secret: d7e98dedace8409fca9c956b29cda4b579681f33f54e1ea77ec5589c28419001
+  bootstrap:
+    namespaces: application, business
+    enabled: true
+    eagerLoad:
+      enabled: true
+
+# logging path
+logging:
+  file:
+    path: './logs'
