@@ -16,7 +16,7 @@ public class PostConstructService {
     @SneakyThrows
     @PostConstruct
     public void afterSingletonsInstantiated() {
-        Thread.sleep(1000);
+        Thread.sleep(666);
     }
 
 }

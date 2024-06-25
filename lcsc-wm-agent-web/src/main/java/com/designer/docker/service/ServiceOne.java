@@ -20,7 +20,7 @@ public class ServiceOne implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        Thread.sleep(800);
+        Thread.sleep(258);
     }
 
 }

@@ -2,6 +2,7 @@ package com.designer.docker.service;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.SmartInitializingSingleton;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -12,10 +13,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class SmartInitializingSingletonService implements SmartInitializingSingleton, InitializingBean {
 
+    @Autowired
+    private TestFeign testFeign;
+
     @Override
     public void afterSingletonsInstantiated() {
         long start = System.currentTimeMillis();
-        while ((System.currentTimeMillis() - start) < 3625) {
+        while ((System.currentTimeMillis() - start) < 789) {
         }
     }
 
