@@ -13,7 +13,7 @@ import java.util.List;
  * @author: Designer
  * @date : 2024-06-25 21:06
  */
-public abstract class _0AbstractListener implements EventListener {
+public abstract class AbstractListener implements EventListener {
 
     protected static final String[] EMPTY = new String[0];
 

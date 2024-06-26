@@ -11,13 +11,9 @@ import org.kohsuke.MetaInfServices;
  * @date : 2024-06-25 21:06
  */
 @MetaInfServices(EventListener.class)
-public class _2GetSingletonListener extends _0AbstractListener {
+public class Step2GetSingletonListener extends AbstractListener {
 
     private static final String DEFAULT_SINGLETON_BEAN_REGISTRY = "org.springframework.beans.factory.support.DefaultSingletonBeanRegistry";
-
-    static boolean at() {
-        return _1PreInstantiateSingletonsListener.startingPreInstantiate.get();
-    }
 
     @Override
     protected String listenClassName() {
@@ -26,14 +22,21 @@ public class _2GetSingletonListener extends _0AbstractListener {
 
     @Override
     protected void atEnter(Event event) {
-        if (at()) {
+        if (isReady()) {
             AtEnterEvent atEnterEvent = (AtEnterEvent) event;
-            _1PreInstantiateSingletonsListener.getSingletonBeans.push((String) atEnterEvent.args[0]);
+            Step1PreInstantiateSingletonsListener.startingInstantiate((String) atEnterEvent.args[0]);
         }
     }
 
     @Override
     protected void atExit(Event event) {
+        if (isReady()) {
+            //ignore
+        }
+    }
+
+    boolean isReady() {
+        return Step1PreInstantiateSingletonsListener.isReady();
     }
 
     @Override
