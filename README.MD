@@ -22,11 +22,12 @@
   最后通过Netty启动Http服务器将数据展示出来
     * 字节码增强使用的是阿里的bytekit字节码类库。 在熟悉相关API后可以很简单的对代码进行增强, 以及调用数据进行监听。
     * 作者利用picocontainer(轻量级依赖注入框架)对方法调用数据的监听做了拓展, 使得用户可以通过JDK自带的SPI机制完成对方法调用数据的监听
+      <br>参阅: io.github.linyimin0812.profiler.core.container.IocContainer#start()
     * spring-startup-analyzer的无用Jar包分析功能是不准确的, 仅供参考
 
-> 2. agent入口
+> 2. Agent入口(修改类加载器, 类插装)
 
-- com.taobao.arthas.core.server.AgentBootstrap
+- io.github.linyimin0812.profiler.agent.ProfilerAgentBoostrap
 
 > 3. 性能分析报告HttpServer启动类
 
