@@ -53,6 +53,8 @@
 - 注释<br>
     * Classloader类加载原理
         - https://******
+        - IDEA启动项目时的类加载器: sun.misc.Launcher.AppClassLoader
+        - SpringBoot打成JAR包后启动项目时的类加载器: org.springframework.boot.loader.LaunchedURLClassLoader
     * Arthas 实现插装的原理:
         - https://yeas.fun/archives/arthas-isolation
         - https://blog.csdn.net/baidu_28523317/article/details/108439696
