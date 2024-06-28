@@ -1,13 +1,13 @@
 package io.github.linyimin0812.profiler.spring.analyzer.bean;
 
 import io.github.linyimin0812.profiler.api.EventListener;
+import io.github.linyimin0812.profiler.api.event.AtEnterEvent;
 import io.github.linyimin0812.profiler.api.event.AtExitEvent;
-import io.github.linyimin0812.profiler.api.event.Event;
 import io.github.linyimin0812.profiler.api.event.InvokeEvent;
 import io.github.linyimin0812.profiler.common.ui.BeanInitResult;
 import io.github.linyimin0812.profiler.common.ui.StartupVO;
 import io.github.linyimin0812.profiler.extension.enhance.springbean.PersistentThreadLocal;
-import io.github.linyimin0812.profiler.spring.event.AbstractListener;
+import io.github.linyimin0812.profiler.spring.AbstractListener;
 import lombok.SneakyThrows;
 import org.kohsuke.MetaInfServices;
 
@@ -30,7 +30,7 @@ public class SmartInitializingStep3AfterInstantiatedListener extends AbstractLis
     private final PersistentThreadLocal<Stack<BeanInitResultWrapper>> smartInitializingBeanThreadLocal = new PersistentThreadLocal<>(Stack::new);
 
     @Override
-    protected void atEnter(Event event) {
+    protected void atEnter(AtEnterEvent event) {
         //记录bean初始化开始
         if (isReady()) {
             smartInitializingBeanThreadLocal.get().push(new BeanInitResultWrapper(SmartInitializingStep1PreInstantiateListener.latestStartedInstantiate(), false));
@@ -38,7 +38,7 @@ public class SmartInitializingStep3AfterInstantiatedListener extends AbstractLis
     }
 
     @Override
-    protected void atExit(Event event) {
+    protected void atExit(AtExitEvent event) {
         //记录bean初始化开始
         if (isReady()) {
 
@@ -74,7 +74,7 @@ public class SmartInitializingStep3AfterInstantiatedListener extends AbstractLis
     }
 
     private boolean isReady() {
-        return SmartInitializingStep2GetSingletonListener.isReady();
+        return SmartInitializingStep2GetSingletonListener.nodeIsReady();
     }
 
     @Override

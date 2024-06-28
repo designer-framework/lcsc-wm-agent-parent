@@ -46,6 +46,13 @@
             <groupId>io.github.linyimin0812</groupId>
             <artifactId>spring-profiler-extension</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.ctrip.framework.apollo</groupId>
+            <artifactId>apollo-client</artifactId>
+            <optional>true</optional>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>

@@ -1,8 +1,9 @@
 package io.github.linyimin0812.profiler.spring.analyzer.bean;
 
 import io.github.linyimin0812.profiler.api.EventListener;
-import io.github.linyimin0812.profiler.api.event.Event;
-import io.github.linyimin0812.profiler.spring.event.AbstractListener;
+import io.github.linyimin0812.profiler.api.event.AtEnterEvent;
+import io.github.linyimin0812.profiler.api.event.AtExitEvent;
+import io.github.linyimin0812.profiler.spring.AbstractListener;
 import lombok.Data;
 import org.kohsuke.MetaInfServices;
 
@@ -21,7 +22,7 @@ public class SmartInitializingStep1PreInstantiateListener extends AbstractListen
 
     private static final String DEFAULT_LISTABLE_BEAN_FACTORY = "org.springframework.beans.factory.support.DefaultListableBeanFactory";
 
-    static boolean isReady() {
+    static boolean nodeIsReady() {
         return !startingPreInstantiate.get().isEmpty();
     }
 
@@ -34,13 +35,13 @@ public class SmartInitializingStep1PreInstantiateListener extends AbstractListen
     }
 
     @Override
-    protected void atEnter(Event event) {
+    protected void atEnter(AtEnterEvent event) {
         Stack<DoPreInstantiateSingletonsState> stateStack = startingPreInstantiate.get();
         stateStack.push(new DoPreInstantiateSingletonsState());
     }
 
     @Override
-    protected void atExit(Event event) {
+    protected void atExit(AtExitEvent event) {
         Stack<DoPreInstantiateSingletonsState> stateStack = startingPreInstantiate.get();
         DoPreInstantiateSingletonsState pop = stateStack.pop();
     }

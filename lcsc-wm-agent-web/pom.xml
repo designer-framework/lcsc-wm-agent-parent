@@ -98,6 +98,11 @@
             <artifactId>spring-boot-loader</artifactId>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>com.lcsc</groupId>
+            <artifactId>lcsc-wm-agent-performance-agent</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>
