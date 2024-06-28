@@ -1,4 +1,4 @@
-package io.github.linyimin0812.profiler.spring;
+package io.github.linyimin0812.profiler.spring.event;
 
 import io.github.linyimin0812.profiler.api.EventListener;
 import io.github.linyimin0812.profiler.api.event.Event;
@@ -25,19 +25,6 @@ public abstract class AbstractListener implements EventListener {
     }
 
     @Override
-    public void onEvent(Event event) {
-        if (event.type == Event.Type.AT_ENTER) {
-            atEnter(event);
-        } else if (event.type == Event.Type.AT_EXIT || event.type == Event.Type.AT_EXCEPTION_EXIT) {
-            atExit(event);
-        }
-    }
-
-    protected abstract void atEnter(Event event);
-
-    protected abstract void atExit(Event event);
-
-    @Override
     public boolean filter(String methodName, String[] methodTypes) {
         String[] listenMethodTypes = listenMethodTypes();
 
@@ -56,6 +43,19 @@ public abstract class AbstractListener implements EventListener {
         return true;
     }
 
+    @Override
+    public void onEvent(Event event) {
+        if (event.type == Event.Type.AT_ENTER) {
+            atEnter(event);
+        } else if (event.type == Event.Type.AT_EXIT || event.type == Event.Type.AT_EXCEPTION_EXIT) {
+            atExit(event);
+        }
+    }
+
+    protected abstract void atEnter(Event event);
+
+    protected abstract void atExit(Event event);
+
     protected abstract String listenClassName();
 
     protected abstract String listenMethodName();
@@ -64,7 +64,7 @@ public abstract class AbstractListener implements EventListener {
 
     @Override
     public List<Event.Type> listen() {
-        return Arrays.asList(Event.Type.AT_ENTER, Event.Type.AT_EXIT);
+        return Arrays.asList(Event.Type.AT_ENTER, Event.Type.AT_EXIT, Event.Type.AT_EXCEPTION_EXIT);
     }
 
     @Override

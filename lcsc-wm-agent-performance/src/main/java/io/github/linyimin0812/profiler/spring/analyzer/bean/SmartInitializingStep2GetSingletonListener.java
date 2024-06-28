@@ -1,30 +1,31 @@
-package io.github.linyimin0812.profiler.spring;
+package io.github.linyimin0812.profiler.spring.analyzer.bean;
 
 import io.github.linyimin0812.profiler.api.EventListener;
 import io.github.linyimin0812.profiler.api.event.AtEnterEvent;
 import io.github.linyimin0812.profiler.api.event.Event;
+import io.github.linyimin0812.profiler.spring.event.AbstractListener;
 import org.kohsuke.MetaInfServices;
 
 /**
  * @description:
  * @author: Designer
  * @date : 2024-06-25 21:06
+ * @see org.springframework.beans.factory.support.DefaultSingletonBeanRegistry#getSingleton(String)
  */
 @MetaInfServices(EventListener.class)
-public class Step2GetSingletonListener extends AbstractListener {
+public class SmartInitializingStep2GetSingletonListener extends AbstractListener {
 
     private static final String DEFAULT_SINGLETON_BEAN_REGISTRY = "org.springframework.beans.factory.support.DefaultSingletonBeanRegistry";
 
-    @Override
-    protected String listenClassName() {
-        return DEFAULT_SINGLETON_BEAN_REGISTRY;
+    static boolean isReady() {
+        return SmartInitializingStep1PreInstantiateListener.isReady();
     }
 
     @Override
     protected void atEnter(Event event) {
         if (isReady()) {
             AtEnterEvent atEnterEvent = (AtEnterEvent) event;
-            Step1PreInstantiateSingletonsListener.startingInstantiate((String) atEnterEvent.args[0]);
+            SmartInitializingStep1PreInstantiateListener.startingInstantiate((String) atEnterEvent.args[0]);
         }
     }
 
@@ -35,8 +36,9 @@ public class Step2GetSingletonListener extends AbstractListener {
         }
     }
 
-    boolean isReady() {
-        return Step1PreInstantiateSingletonsListener.isReady();
+    @Override
+    protected String listenClassName() {
+        return DEFAULT_SINGLETON_BEAN_REGISTRY;
     }
 
     @Override

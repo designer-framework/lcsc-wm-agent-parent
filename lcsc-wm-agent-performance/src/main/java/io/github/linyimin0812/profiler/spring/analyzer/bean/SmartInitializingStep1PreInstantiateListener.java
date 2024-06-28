@@ -1,17 +1,21 @@
-package io.github.linyimin0812.profiler.spring;
+package io.github.linyimin0812.profiler.spring.analyzer.bean;
 
 import io.github.linyimin0812.profiler.api.EventListener;
 import io.github.linyimin0812.profiler.api.event.Event;
+import io.github.linyimin0812.profiler.spring.event.AbstractListener;
 import lombok.Data;
 import org.kohsuke.MetaInfServices;
 
 import java.util.Stack;
 
 /**
- * @author linyimin
- **/
+ * @description:
+ * @author: Designer
+ * @date : 2024-06-25 21:06
+ * @see org.springframework.beans.factory.support.DefaultListableBeanFactory#preInstantiateSingletons()
+ */
 @MetaInfServices(EventListener.class)
-public class Step1PreInstantiateSingletonsListener extends AbstractListener {
+public class SmartInitializingStep1PreInstantiateListener extends AbstractListener {
 
     private static final ThreadLocal<Stack<DoPreInstantiateSingletonsState>> startingPreInstantiate = ThreadLocal.withInitial(Stack::new);
 
@@ -30,6 +34,18 @@ public class Step1PreInstantiateSingletonsListener extends AbstractListener {
     }
 
     @Override
+    protected void atEnter(Event event) {
+        Stack<DoPreInstantiateSingletonsState> stateStack = startingPreInstantiate.get();
+        stateStack.push(new DoPreInstantiateSingletonsState());
+    }
+
+    @Override
+    protected void atExit(Event event) {
+        Stack<DoPreInstantiateSingletonsState> stateStack = startingPreInstantiate.get();
+        DoPreInstantiateSingletonsState pop = stateStack.pop();
+    }
+
+    @Override
     protected String listenClassName() {
         return DEFAULT_LISTABLE_BEAN_FACTORY;
     }
@@ -42,18 +58,6 @@ public class Step1PreInstantiateSingletonsListener extends AbstractListener {
     @Override
     protected String[] listenMethodTypes() {
         return EMPTY;
-    }
-
-    @Override
-    protected void atEnter(Event event) {
-        Stack<DoPreInstantiateSingletonsState> stateStack = startingPreInstantiate.get();
-        stateStack.push(new DoPreInstantiateSingletonsState());
-    }
-
-    @Override
-    protected void atExit(Event event) {
-        Stack<DoPreInstantiateSingletonsState> stateStack = startingPreInstantiate.get();
-        DoPreInstantiateSingletonsState pop = stateStack.pop();
     }
 
     @Override
