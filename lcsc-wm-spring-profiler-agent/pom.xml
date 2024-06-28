@@ -10,7 +10,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>lcsc-wm-agent-performance-agent</artifactId>
+    <artifactId>lcsc-wm-spring-profiler-agent</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 

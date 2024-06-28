@@ -35,11 +35,12 @@
     </properties>
 
     <modules>
-        <module>lcsc-wm-agent-main</module>
-        <module>lcsc-wm-agent-web</module>
-        <module>lcsc-wm-agent-performance</module>
+        <module>lcsc-wm-spring-profiler-attach</module>
+        <module>lcsc-wm-spring-profiler-agent</module>
 
-        <module>lcsc-wm-agent-performance-agent</module>
+        <module>lcsc-wm-springboot-trubo</module>
+        <module>lcsc-wm-springboot-web</module>
+
     </modules>
 
     <dependencies>

@@ -9,7 +9,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>lcsc-wm-agent-web</artifactId>
+    <artifactId>lcsc-wm-springboot-web</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
@@ -65,7 +65,7 @@
         </dependency>
         <dependency>
             <groupId>com.lcsc</groupId>
-            <artifactId>lcsc-wm-agent-performance</artifactId>
+            <artifactId>lcsc-wm-springboot-trubo</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 

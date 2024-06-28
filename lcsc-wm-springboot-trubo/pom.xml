@@ -10,7 +10,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>lcsc-wm-agent-performance</artifactId>
+    <artifactId>lcsc-wm-springboot-trubo</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
