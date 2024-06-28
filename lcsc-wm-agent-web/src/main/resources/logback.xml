@@ -24,6 +24,7 @@
 
     <logger name="com.alibaba" level="TRACE"/>
     <logger name="com.taobao" level="TRACE"/>
+    <logger name="com.ctrip.framework.apollo" level="TRACE"/>
 
     <root level="INFO">
         <appender-ref ref="STDOUT"/>

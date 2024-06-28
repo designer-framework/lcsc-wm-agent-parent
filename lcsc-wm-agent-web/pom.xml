@@ -63,45 +63,59 @@
             <artifactId>commons-io</artifactId>
             <version>2.16.1</version>
         </dependency>
+        <dependency>
+            <groupId>com.lcsc</groupId>
+            <artifactId>lcsc-wm-agent-performance</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
 
         <dependency>
             <groupId>io.github.linyimin0812</groupId>
             <artifactId>spring-profiler-starter</artifactId>
+            <optional>true</optional>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.github.linyimin0812</groupId>
             <artifactId>spring-profiler-agent</artifactId>
+            <optional>true</optional>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.github.linyimin0812</groupId>
             <artifactId>spring-profiler-api</artifactId>
+            <optional>true</optional>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.github.linyimin0812</groupId>
             <artifactId>spring-profiler-bridge</artifactId>
+            <optional>true</optional>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.github.linyimin0812</groupId>
             <artifactId>spring-profiler-common</artifactId>
+            <optional>true</optional>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.github.linyimin0812</groupId>
             <artifactId>spring-profiler-core</artifactId>
+            <optional>true</optional>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.github.linyimin0812</groupId>
             <artifactId>spring-profiler-extension</artifactId>
+            <optional>true</optional>
+            <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-loader</artifactId>
             <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>com.lcsc</groupId>
-            <artifactId>lcsc-wm-agent-performance-agent</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

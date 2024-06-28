@@ -19,39 +19,14 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.github.linyimin0812</groupId>
-            <artifactId>spring-profiler-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.github.linyimin0812</groupId>
-            <artifactId>spring-profiler-agent</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.github.linyimin0812</groupId>
-            <artifactId>spring-profiler-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.github.linyimin0812</groupId>
-            <artifactId>spring-profiler-bridge</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.github.linyimin0812</groupId>
-            <artifactId>spring-profiler-common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.github.linyimin0812</groupId>
-            <artifactId>spring-profiler-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.github.linyimin0812</groupId>
-            <artifactId>spring-profiler-extension</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>com.ctrip.framework.apollo</groupId>
             <artifactId>apollo-client</artifactId>
             <optional>true</optional>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
         </dependency>
     </dependencies>
 
@@ -60,23 +35,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <classpathPrefix>lib/</classpathPrefix>
-                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                        </manifest>
-                        <manifestEntries>
-                            <Premain-Class>
-                                com.lcsc.wm.agent.agent.AgentMain
-                            </Premain-Class>
-                            <Can-Redefine-Classes>true</Can-Redefine-Classes>
-                            <Can-Retransform-Classes>true</Can-Retransform-Classes>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
             </plugin>
         </plugins>
     </build>

@@ -1,0 +1,6 @@
+#SmartInitializingSingleton
+io.github.linyimin0812.profiler.spring.analyzer.bean.SmartInitializingStep1PreInstantiateListener
+io.github.linyimin0812.profiler.spring.analyzer.bean.SmartInitializingStep2GetSingletonListener
+io.github.linyimin0812.profiler.spring.analyzer.bean.SmartInitializingStep3AfterInstantiatedListener
+#Apollo
+io.github.linyimin0812.profiler.spring.analyzer.apollo.ApolloLoaderConfigStep1Listener

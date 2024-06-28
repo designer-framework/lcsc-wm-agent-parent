@@ -1,1 +1,1 @@
-io.github.linyimin0812.profiler.spring.analyzer.apollo.ConfigManagerInjectorCustomizer
+com.lcsc.performance.apollo.ConfigManagerInjectorCustomizer

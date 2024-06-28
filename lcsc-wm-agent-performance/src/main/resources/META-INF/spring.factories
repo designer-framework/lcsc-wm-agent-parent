@@ -1,0 +1,6 @@
+org.springframework.boot.env.EnvironmentPostProcessor=\
+  com.lcsc.performance.apollo.AsyncApolloApplicationContextInitializer
+org.springframework.context.ApplicationContextInitializer=\
+  com.lcsc.performance.apollo.AsyncApolloApplicationContextInitializer
+org.springframework.boot.SpringApplicationRunListener=\
+com.lcsc.performance.listener.ApplicationStartedListener
