@@ -9,7 +9,7 @@ import com.ctrip.framework.apollo.spi.ApolloInjectorCustomizer;
 import com.ctrip.framework.apollo.spi.ConfigFactory;
 import com.ctrip.framework.apollo.spi.ConfigFactoryManager;
 import com.google.common.collect.Maps;
-import com.lcsc.turbo.apollo.utils.AsyncUtils;
+import com.lcsc.turbo.common.utils.AsyncUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Proxy;
