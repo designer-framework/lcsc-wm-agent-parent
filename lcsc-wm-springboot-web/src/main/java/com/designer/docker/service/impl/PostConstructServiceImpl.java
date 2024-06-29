@@ -17,7 +17,7 @@ public class PostConstructServiceImpl implements TestService {
     @SneakyThrows
     @PostConstruct
     public void afterSingletonsInstantiated() {
-        Thread.sleep(666);
+        Thread.sleep(111);
     }
 
 }

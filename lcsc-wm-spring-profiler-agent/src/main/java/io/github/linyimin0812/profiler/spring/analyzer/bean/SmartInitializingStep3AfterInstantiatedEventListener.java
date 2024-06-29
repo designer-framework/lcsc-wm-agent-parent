@@ -6,7 +6,7 @@ import io.github.linyimin0812.profiler.api.event.InvokeEvent;
 import io.github.linyimin0812.profiler.common.ui.BeanInitResult;
 import io.github.linyimin0812.profiler.common.ui.StartupVO;
 import io.github.linyimin0812.profiler.extension.enhance.springbean.PersistentThreadLocal;
-import io.github.linyimin0812.profiler.spring.AbstractInvokeDetailListener;
+import io.github.linyimin0812.profiler.spring.BaseEventListener;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.ArrayUtils;
 import org.kohsuke.MetaInfServices;
@@ -23,9 +23,9 @@ import java.util.stream.Collectors;
  * @see org.springframework.beans.factory.SmartInitializingSingleton#afterSingletonsInstantiated()
  */
 @MetaInfServices(EventListener.class)
-public class SmartInitializingStep3AfterInstantiatedEventListener extends AbstractInvokeDetailListener {
+public class SmartInitializingStep3AfterInstantiatedEventListener extends BaseEventListener {
 
-    private static final String DEFAULT_SINGLETON_BEAN_REGISTRY = "com.designer";
+    private static final String[] DEFAULT_SINGLETON_BEAN_REGISTRY = {"com.designer"};
 
     private final PersistentThreadLocal<Stack<BeanInitResultWrapper>> smartInitializingBeanThreadLocal = new PersistentThreadLocal<>(Stack::new);
 
@@ -53,7 +53,7 @@ public class SmartInitializingStep3AfterInstantiatedEventListener extends Abstra
     }
 
     @Override
-    protected String listenClassName() {
+    protected String[] listenClassName() {
         return DEFAULT_SINGLETON_BEAN_REGISTRY;
     }
 

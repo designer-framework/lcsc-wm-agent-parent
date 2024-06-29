@@ -2,7 +2,7 @@ package io.github.linyimin0812.profiler.spring.analyzer.feign;
 
 import io.github.linyimin0812.profiler.api.EventListener;
 import io.github.linyimin0812.profiler.api.event.AtEnterEvent;
-import io.github.linyimin0812.profiler.spring.AbstractComponentInvokeDetailListener;
+import io.github.linyimin0812.profiler.spring.AbstractMethodInvokeDetailListener;
 import org.apache.commons.lang3.ArrayUtils;
 import org.kohsuke.MetaInfServices;
 
@@ -13,11 +13,11 @@ import org.kohsuke.MetaInfServices;
  * {@link org.springframework.cloud.openfeign.EnableFeignClients }
  **/
 @MetaInfServices(EventListener.class)
-public class OpenFeignAutoConfigurationListener extends AbstractComponentInvokeDetailListener {
+public class OpenFeignAutoConfigurationListener extends AbstractMethodInvokeDetailListener {
 
     @Override
-    protected String[] listenClassName() {
-        return new String[]{"org.springframework.cloud.openfeign.FeignClientFactoryBean"};
+    protected String listenClassName0() {
+        return "org.springframework.cloud.openfeign.FeignClientFactoryBean";
     }
 
     @Override
@@ -31,7 +31,7 @@ public class OpenFeignAutoConfigurationListener extends AbstractComponentInvokeD
     }
 
     @Override
-    protected String getInvokeCountMethodAlias(AtEnterEvent atEnterEvent) {
+    protected String getFullyQualifiedNameAlias(AtEnterEvent atEnterEvent) {
         return "OpenFeign加载耗时";
     }
 

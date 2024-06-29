@@ -6,6 +6,7 @@ import io.github.linyimin0812.profiler.api.event.Event;
 import io.github.linyimin0812.profiler.api.event.InvokeEvent;
 import io.github.linyimin0812.profiler.common.logger.LogFactory;
 import io.github.linyimin0812.profiler.common.logger.Logger;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,6 +24,17 @@ public abstract class BaseEventListener implements EventListener {
     public void start() {
         logger.error(getClass(), "============" + getClass().getSimpleName() + " start=============");
     }
+
+    /**
+     * @param className 类全限定名集合, 如果为空, 默认返回为false
+     * @return
+     */
+    @Override
+    public boolean filter(String className) {
+        return StringUtils.startsWithAny(className, listenClassName());
+    }
+
+    protected abstract String[] listenClassName();
 
     /**
      * @param methodName  方法名

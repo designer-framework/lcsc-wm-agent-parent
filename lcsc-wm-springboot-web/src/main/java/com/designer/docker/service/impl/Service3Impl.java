@@ -21,7 +21,7 @@ public class Service3Impl implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        Thread.sleep(300);
+        Thread.sleep(190);
     }
 
 }

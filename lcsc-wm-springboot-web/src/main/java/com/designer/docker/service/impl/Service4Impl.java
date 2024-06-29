@@ -33,7 +33,7 @@ public class Service4Impl implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        Thread.sleep(400);
+        Thread.sleep(220);
     }
 
 }

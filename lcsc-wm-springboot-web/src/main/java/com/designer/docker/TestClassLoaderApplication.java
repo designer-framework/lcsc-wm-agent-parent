@@ -5,13 +5,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-@EnableSwagger2
 @EnableApolloConfig
 @EnableFeignClients
 @EnableDiscoveryClient(autoRegister = false)
-@SpringBootApplication(scanBasePackages = "com.designer")
+@SpringBootApplication(scanBasePackages = {"com.designer", "com.fasterxml", "java", "org.apache"})
 public class TestClassLoaderApplication {
 
     public static void main(String[] args) {

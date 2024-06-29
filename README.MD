@@ -3,13 +3,13 @@
 ~~~
 -Denv=DEV
 -XX:-RestrictContended
--javaagent:C:\software\work\space\lcsc-wm-agent-parent\lcsc-wm-agent-performance\target\lcsc-wm-agent-performance-1.0-SNAPSHOT.jar
+-javaagent:D:\TeamWork\lcsc-wm-agent-parent\lcsc-wm-spring-profiler-agent\target\lcsc-wm-spring-profiler-agent-1.0-SNAPSHOT.jar
 ~~~
 
 ~~~
 -Denv=DEV
 -XX:-RestrictContended
--javaagent:C:\software\work\space\lcsc-wm-agent-parent\arthas\arthas-agent.jar=C:\software\work\space\lcsc-wm-agent-parent\arthas\arthas-core.jar
+-javaagent:D:\TeamWork\lcsc-wm-agent-parent\lcsc-wm-spring-profiler-agent\target\lcsc-wm-spring-profiler-agent-1.0-SNAPSHOT.jar
 ~~~
 
 # 2. [性能分析工具介绍](https://github.com/linyimin0812/spring-startup-analyzer/tree/main)

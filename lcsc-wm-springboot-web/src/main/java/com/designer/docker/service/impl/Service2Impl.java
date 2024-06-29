@@ -33,13 +33,13 @@ public class Service2Impl implements TestService, InitializingBean, SmartInitial
     @Override
     public void afterSingletonsInstantiated() {
         long start = System.currentTimeMillis();
-        while ((System.currentTimeMillis() - start) < 789) {
+        while ((System.currentTimeMillis() - start) < 234) {
         }
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        Thread.sleep(200);
+        Thread.sleep(160);
     }
 
 }

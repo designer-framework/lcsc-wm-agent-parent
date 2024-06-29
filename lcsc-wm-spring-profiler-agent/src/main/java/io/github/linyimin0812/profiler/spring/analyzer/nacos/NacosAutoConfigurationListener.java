@@ -2,7 +2,7 @@ package io.github.linyimin0812.profiler.spring.analyzer.nacos;
 
 import io.github.linyimin0812.profiler.api.EventListener;
 import io.github.linyimin0812.profiler.api.event.AtEnterEvent;
-import io.github.linyimin0812.profiler.spring.AbstractComponentInvokeDetailListener;
+import io.github.linyimin0812.profiler.spring.AbstractMethodInvokeDetailListener;
 import org.kohsuke.MetaInfServices;
 
 /**
@@ -12,20 +12,20 @@ import org.kohsuke.MetaInfServices;
  * {@link com.alibaba.cloud.nacos.discovery.NacosDiscoveryAutoConfiguration }
  **/
 @MetaInfServices(EventListener.class)
-public class NacosAutoConfigurationListener extends AbstractComponentInvokeDetailListener {
+public class NacosAutoConfigurationListener extends AbstractMethodInvokeDetailListener {
 
     @Override
     public boolean filter(String methodName, String[] methodTypes) {
-        return true;
+        return super.filter(methodName, methodTypes);
     }
 
     @Override
-    protected String[] listenClassName() {
-        return new String[]{"com.alibaba.cloud.nacos"};
+    protected String listenClassName0() {
+        return "com.alibaba.cloud.nacos";
     }
 
     @Override
-    protected String getInvokeCountMethodAlias(AtEnterEvent atEnterEvent) {
+    protected String getFullyQualifiedNameAlias(AtEnterEvent atEnterEvent) {
         return "Nacos加载耗时";
     }
 

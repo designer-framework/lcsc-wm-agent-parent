@@ -32,13 +32,13 @@ public class SmartInitializingSingletonServiceImpl implements InitializingBean, 
     @Override
     public void afterSingletonsInstantiated() {
         long start = System.currentTimeMillis();
-        while ((System.currentTimeMillis() - start) < 789) {
+        while ((System.currentTimeMillis() - start) < 432) {
         }
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        Thread.sleep(1000);
+        Thread.sleep(250);
     }
 
 }

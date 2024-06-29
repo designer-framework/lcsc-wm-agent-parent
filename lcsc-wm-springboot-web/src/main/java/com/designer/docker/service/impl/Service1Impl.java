@@ -28,7 +28,7 @@ public class Service1Impl implements TestService, InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        Thread.sleep(100);
+        Thread.sleep(130);
     }
 
 }

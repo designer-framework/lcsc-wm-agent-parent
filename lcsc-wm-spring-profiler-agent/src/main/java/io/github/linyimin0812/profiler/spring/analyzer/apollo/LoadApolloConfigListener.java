@@ -2,7 +2,7 @@ package io.github.linyimin0812.profiler.spring.analyzer.apollo;
 
 import io.github.linyimin0812.profiler.api.EventListener;
 import io.github.linyimin0812.profiler.api.event.AtEnterEvent;
-import io.github.linyimin0812.profiler.spring.AbstractComponentInvokeDetailListener;
+import io.github.linyimin0812.profiler.spring.AbstractMethodInvokeDetailListener;
 import org.kohsuke.MetaInfServices;
 
 /**
@@ -12,19 +12,19 @@ import org.kohsuke.MetaInfServices;
  * @see com.ctrip.framework.apollo.spring.boot.ApolloApplicationContextInitializer#initialize(org.springframework.context.ConfigurableApplicationContext)
  **/
 @MetaInfServices(EventListener.class)
-public class LoadApolloConfigListener extends AbstractComponentInvokeDetailListener {
+public class LoadApolloConfigListener extends AbstractMethodInvokeDetailListener {
 
     private static final String INVOKE_COUNT_METHOD_ALIAS = "阿波罗配置加载耗时";
 
-    private static final String[] LISTEN_CLASS_NAME = new String[]{"com.ctrip.framework.apollo.spring.boot.ApolloApplicationContextInitializer"};
+    private static final String LISTEN_CLASS_NAME = "com.ctrip.framework.apollo.spring.boot.ApolloApplicationContextInitializer";
 
     @Override
-    protected final String getInvokeCountMethodAlias(AtEnterEvent atEnterEvent) {
+    protected final String getFullyQualifiedNameAlias(AtEnterEvent atEnterEvent) {
         return INVOKE_COUNT_METHOD_ALIAS;
     }
 
     @Override
-    protected String[] listenClassName() {
+    protected String listenClassName0() {
         return LISTEN_CLASS_NAME;
     }
 

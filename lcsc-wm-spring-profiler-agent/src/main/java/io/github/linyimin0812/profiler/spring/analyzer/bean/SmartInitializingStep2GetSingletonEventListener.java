@@ -4,7 +4,7 @@ import io.github.linyimin0812.profiler.api.EventListener;
 import io.github.linyimin0812.profiler.api.event.AtEnterEvent;
 import io.github.linyimin0812.profiler.api.event.Event;
 import io.github.linyimin0812.profiler.api.event.InvokeEvent;
-import io.github.linyimin0812.profiler.spring.AbstractInvokeDetailListener;
+import io.github.linyimin0812.profiler.spring.BaseEventListener;
 import org.kohsuke.MetaInfServices;
 
 /**
@@ -14,9 +14,9 @@ import org.kohsuke.MetaInfServices;
  * @see org.springframework.beans.factory.support.DefaultSingletonBeanRegistry#getSingleton(String)
  */
 @MetaInfServices(EventListener.class)
-public class SmartInitializingStep2GetSingletonEventListener extends AbstractInvokeDetailListener {
+public class SmartInitializingStep2GetSingletonEventListener extends BaseEventListener {
 
-    private static final String DEFAULT_SINGLETON_BEAN_REGISTRY = "org.springframework.beans.factory.support.DefaultSingletonBeanRegistry";
+    private static final String[] DEFAULT_SINGLETON_BEAN_REGISTRY = {"org.springframework.beans.factory.support.DefaultSingletonBeanRegistry"};
 
     static boolean nodeIsReady() {
         return SmartInitializingStep1PreInstantiateEventListener.nodeIsReady();
@@ -38,7 +38,7 @@ public class SmartInitializingStep2GetSingletonEventListener extends AbstractInv
     }
 
     @Override
-    protected String listenClassName() {
+    protected String[] listenClassName() {
         return DEFAULT_SINGLETON_BEAN_REGISTRY;
     }
 

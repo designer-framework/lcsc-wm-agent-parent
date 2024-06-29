@@ -3,7 +3,7 @@ package io.github.linyimin0812.profiler.spring.analyzer.bean;
 import io.github.linyimin0812.profiler.api.EventListener;
 import io.github.linyimin0812.profiler.api.event.AtEnterEvent;
 import io.github.linyimin0812.profiler.api.event.InvokeEvent;
-import io.github.linyimin0812.profiler.spring.AbstractInvokeDetailListener;
+import io.github.linyimin0812.profiler.spring.BaseEventListener;
 import lombok.Data;
 import org.apache.commons.lang3.ArrayUtils;
 import org.kohsuke.MetaInfServices;
@@ -17,11 +17,11 @@ import java.util.Stack;
  * @see org.springframework.beans.factory.support.DefaultListableBeanFactory#preInstantiateSingletons()
  */
 @MetaInfServices(EventListener.class)
-public class SmartInitializingStep1PreInstantiateEventListener extends AbstractInvokeDetailListener {
+public class SmartInitializingStep1PreInstantiateEventListener extends BaseEventListener {
 
     private static final ThreadLocal<Stack<DoPreInstantiateSingletonsState>> startingPreInstantiate = ThreadLocal.withInitial(Stack::new);
 
-    private static final String DEFAULT_LISTABLE_BEAN_FACTORY = "org.springframework.beans.factory.support.DefaultListableBeanFactory";
+    private static final String[] DEFAULT_LISTABLE_BEAN_FACTORY = {"org.springframework.beans.factory.support.DefaultListableBeanFactory"};
 
     static boolean nodeIsReady() {
         return !startingPreInstantiate.get().isEmpty();
@@ -48,7 +48,7 @@ public class SmartInitializingStep1PreInstantiateEventListener extends AbstractI
     }
 
     @Override
-    protected String listenClassName() {
+    protected String[] listenClassName() {
         return DEFAULT_LISTABLE_BEAN_FACTORY;
     }
 

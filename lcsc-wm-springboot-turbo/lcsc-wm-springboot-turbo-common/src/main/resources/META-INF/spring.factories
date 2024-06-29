@@ -1,2 +1,2 @@
 org.springframework.boot.SpringApplicationRunListener=\
-listener.com.lcsc.turbo.apollo.ApplicationStartedListener
+com.lcsc.turbo.common.listener.ApplicationStartedListener
