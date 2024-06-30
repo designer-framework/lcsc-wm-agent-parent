@@ -1,6 +1,6 @@
 package com.designer.docker.web;
 
-import com.designer.docker.feign.Test1Feign;
+import com.designer.docker.service.impl.Service1Impl;
 import com.designer.docker.vo.Test1VO;
 import com.designer.docker.vo.Test2VO;
 import com.designer.docker.vo.Test3VO;
@@ -23,17 +23,19 @@ import org.springframework.web.bind.annotation.*;
 public class Test1Controller {
 
     @Autowired
-    private Test1Feign test1Feign;
+    private Service1Impl service1;
 
     @PostMapping("/01")
     @ApiOperation(value = "用户测试", notes = "用户测试notes")
     public Test1VO api_1(@RequestBody Test1VO test1VO) {
+        service1.test();
         return test1VO;
     }
 
     @GetMapping("/02")
     @ApiOperation(value = "用户测试", notes = "用户测试notes")
     public Test2VO api_2(Test2VO test2VO) {
+        service1.test2();
         return test2VO;
     }
 

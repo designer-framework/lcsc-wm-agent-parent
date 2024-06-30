@@ -1,7 +1,6 @@
 package com.designer.docker.configuration;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -15,7 +14,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  * @author: Designer
  * @date : 2024-06-29 13:39
  */
-@Configuration
+//@Configuration
 @EnableSwagger2
 public class Swagger2AutoConfiguration {
 
@@ -33,7 +32,7 @@ public class Swagger2AutoConfiguration {
                 .groupName("Agent系统")
                 .apiInfo(apiInfo)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.designer.*"))
+                .apis(RequestHandlerSelectors.basePackage("com.designer"))
                 .paths(PathSelectors.any())
                 .build();
     }
