@@ -25,9 +25,6 @@ public class Test1Controller {
     @Autowired
     private Service1Impl service1;
 
-    @Autowired
-    private Template0ServiceImpl template0Service;
-
     @PostMapping("/01")
     @ApiOperation(value = "用户测试", notes = "用户测试notes")
     public Test1VO api_1(@RequestBody Test1VO test1VO) {
