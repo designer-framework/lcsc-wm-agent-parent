@@ -1,5 +1,6 @@
 package com.designer.turbo.reader;
 
+import lombok.SneakyThrows;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.FactoryBean;
@@ -18,6 +19,7 @@ import org.springframework.context.annotation.AnnotationConfigUtils;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.Ordered;
 import org.springframework.core.PriorityOrdered;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
 
@@ -82,11 +84,22 @@ public class MetadataReaderFactoryApplicationContextInitializer implements Appli
                 implements FactoryBean<ConcurrentReferenceCachingMetadataReaderFactory>, BeanClassLoaderAware,
                 ApplicationListener<ContextRefreshedEvent> {
 
+            private final Object lock = new Object();
             private ConcurrentReferenceCachingMetadataReaderFactory metadataReaderFactory;
 
+
+            /**
+             * @param classLoader the owning class loader
+             * @see org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider#scanCandidateComponents(java.lang.String)
+             */
+            @SneakyThrows
             @Override
             public void setBeanClassLoader(ClassLoader classLoader) {
-                metadataReaderFactory = new ConcurrentReferenceCachingMetadataReaderFactory(classLoader);
+                synchronized (lock) {
+                    metadataReaderFactory = new ConcurrentReferenceCachingMetadataReaderFactory(classLoader);
+                    PathMatchingResourcePatternResolver pathMatchingResourcePatternResolver = new PathMatchingResourcePatternResolver();
+                    pathMatchingResourcePatternResolver.getResources("");
+                }
             }
 
             @Override
