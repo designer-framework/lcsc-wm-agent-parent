@@ -29,7 +29,7 @@ public class CopiedMain {
                         "\n    public void test%s() {\n" +
                         "    }\n"
                 , 1000
-                , 2
+                , 20
         );
 
         //
@@ -38,7 +38,7 @@ public class CopiedMain {
                 , "D:\\TeamWork\\lcsc-wm-agent-parent\\lcsc-wm-springboot-web\\src\\main\\java\\com\\designer\\turbo\\test\\tests\\aspectj\\Test%sAspectj.java"
                 , "@Pointcut(\"(execution(* com..*.*(..)) || execution(* org..*.*(..))) && @annotation(com.designer.turbo.annotation.Test)\")"
                 , 1
-                , 2
+                , 20
         );
 
     }
