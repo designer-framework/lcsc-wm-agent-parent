@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
  */
 @Aspect
 @Component
-public class Test9Aspectj {
+public class TestAspectj {
 
     @Pointcut("(execution(* com..*.*(..)) || execution(* org..*.*(..))) && @annotation(com.designer.turbo.annotation.Test)")
     public void testPointcut() {

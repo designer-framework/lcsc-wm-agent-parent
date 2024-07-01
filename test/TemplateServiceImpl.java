@@ -1,4 +1,4 @@
-package com.designer.turbo.service.impl.tests;
+package com.designer.turbo.test.tests.service;
 
 import com.designer.turbo.annotation.Test;
 import com.designer.turbo.service.TestService;
