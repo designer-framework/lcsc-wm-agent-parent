@@ -2,7 +2,6 @@ package com.designer.turbo.reader;
 
 import lombok.Setter;
 import lombok.SneakyThrows;
-import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.FactoryBean;
@@ -105,12 +104,9 @@ public class MetadataReaderFactoryApplicationContextInitializer implements Appli
             public void setBeanClassLoader(ClassLoader classLoader) {
                 synchronized (lock) {
                     metadataReaderFactory = new ConcurrentReferenceCachingMetadataReaderFactory(classLoader);
-                    String[] defaultScan = applicationContext.getEnvironment().getProperty("defaultScan", String[].class);
-                    if (ArrayUtils.isNotEmpty(defaultScan)) {
-                        parallelPreLoad(defaultScan);
-                    } else {
-                        parallelPreLoad();
-                    }
+                    parallelPreLoad(
+                            applicationContext.getEnvironment().getProperty("defaultScan", String[].class, new String[]{"com.designer"})
+                    );
                 }
             }
 

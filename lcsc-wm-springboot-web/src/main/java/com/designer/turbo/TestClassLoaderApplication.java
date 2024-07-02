@@ -9,7 +9,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @EnableApolloConfig
 @EnableFeignClients
 @EnableDiscoveryClient(autoRegister = false)
-@SpringBootApplication(scanBasePackages = {"com.designer", "com.fasterxml", "java", "org.apache"})
+@SpringBootApplication(scanBasePackages = {"com.designer", "com.fasterxml", "org.apache"})
 public class TestClassLoaderApplication {
 
     public static void main(String[] args) {

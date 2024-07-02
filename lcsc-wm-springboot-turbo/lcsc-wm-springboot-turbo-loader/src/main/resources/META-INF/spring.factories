@@ -1,0 +1,2 @@
+org.springframework.context.ApplicationContextInitializer=\
+  com.lcsc.turbo.loader.configuration.ParallelMetadataReaderFactoryApplicationContextInitializer

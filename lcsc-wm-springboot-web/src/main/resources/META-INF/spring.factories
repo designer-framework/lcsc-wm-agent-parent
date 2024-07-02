@@ -1,4 +1,2 @@
 org.springframework.boot.SpringApplicationRunListener=\
 com.designer.turbo.listener.ApplicationStartedListener
-org.springframework.context.ApplicationContextInitializer=\
-com.designer.turbo.reader.MetadataReaderFactoryApplicationContextInitializer
