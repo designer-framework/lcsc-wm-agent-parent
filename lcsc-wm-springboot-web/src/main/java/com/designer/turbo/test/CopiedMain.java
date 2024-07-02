@@ -28,8 +28,8 @@ public class CopiedMain {
                 , "\n    @Test" +
                         "\n    public void test%s() {\n" +
                         "    }\n"
+                , 100
                 , 1000
-                , 6
         );
 
         //

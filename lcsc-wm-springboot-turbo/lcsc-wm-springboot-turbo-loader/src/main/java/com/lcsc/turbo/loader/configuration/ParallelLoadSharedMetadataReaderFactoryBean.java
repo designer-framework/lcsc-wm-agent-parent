@@ -67,12 +67,13 @@ public class ParallelLoadSharedMetadataReaderFactoryBean implements FactoryBean<
             CountDownLatch countDownLatch = new CountDownLatch(properties.getScanPackages().size());
 
             StopWatch stopWatch = new StopWatch();
-            for (String preScanPath : properties.getScanPackages()) {
 
-                //并行扫描
-                if (properties.isEnabled()) {
+            //并行扫描
+            if (properties.isEnabled()) {
 
-                    stopWatch.start("并行扫包耗时");
+                for (String preScanPath : properties.getScanPackages()) {
+
+                    stopWatch.start("并行扫包: " + preScanPath);
                     AsyncUtils.submit(() -> {
                         try {
                             scanningCandidateComponent.findCandidateComponents(preScanPath);
@@ -82,27 +83,33 @@ public class ParallelLoadSharedMetadataReaderFactoryBean implements FactoryBean<
                             countDownLatch.countDown();
                         }
                     });
-
-                    countDownLatch.await();
                     stopWatch.stop();
 
-                    //串行扫描
-                } else {
+                }
+
+                countDownLatch.await();
+                log.error("\n并行扫包-结束{}, {}", properties.getScanPackages(), stopWatch.prettyPrint());
+
+
+                //串行扫描
+            } else {
+
+                for (String preScanPath : properties.getScanPackages()) {
 
                     try {
                         stopWatch.start(preScanPath);
-                        countDownLatch.countDown();
                         scanningCandidateComponent.findCandidateComponents(preScanPath);
+                        countDownLatch.countDown();
                         stopWatch.stop();
                     } catch (Exception ignored) {
                         //
                     }
 
-                    countDownLatch.await();
-
                 }
+                countDownLatch.await();
+                log.error("\n串行扫包-结束{}, {}", properties.getScanPackages(), stopWatch.prettyPrint());
+
             }
-            log.error("\n并行扫包-结束{}, {}", properties.getScanPackages(), stopWatch.prettyPrint());
 
         }
         return metadataReaderFactory;
