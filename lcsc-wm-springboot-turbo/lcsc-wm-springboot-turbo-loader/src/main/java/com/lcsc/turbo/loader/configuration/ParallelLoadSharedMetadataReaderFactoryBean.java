@@ -71,6 +71,7 @@ public class ParallelLoadSharedMetadataReaderFactoryBean implements FactoryBean<
 
                 //并行扫描
                 if (properties.isEnabled()) {
+
                     stopWatch.start("并行扫包耗时");
                     AsyncUtils.submit(() -> {
                         try {
@@ -81,8 +82,13 @@ public class ParallelLoadSharedMetadataReaderFactoryBean implements FactoryBean<
                             countDownLatch.countDown();
                         }
                     });
+
+                    countDownLatch.await();
+                    stopWatch.stop();
+
                     //串行扫描
                 } else {
+
                     try {
                         stopWatch.start(preScanPath);
                         countDownLatch.countDown();
@@ -91,10 +97,11 @@ public class ParallelLoadSharedMetadataReaderFactoryBean implements FactoryBean<
                     } catch (Exception ignored) {
                         //
                     }
+
+                    countDownLatch.await();
+
                 }
             }
-            countDownLatch.await();
-            stopWatch.stop();
             log.error("\n并行扫包-结束{}, {}", properties.getScanPackages(), stopWatch.prettyPrint());
 
         }
