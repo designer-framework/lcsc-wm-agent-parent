@@ -23,4 +23,8 @@ public class AsyncUtils {
         return threadPoolTaskExecutor.submit(tCallable);
     }
 
+    public static void submit(Runnable tCallable) {
+        threadPoolTaskExecutor.submit(tCallable);
+    }
+
 }

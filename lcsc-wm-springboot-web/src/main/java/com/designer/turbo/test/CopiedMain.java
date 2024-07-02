@@ -77,8 +77,4 @@ public class CopiedMain {
         return FileUtils.readFileToString(file0, StandardCharsets.UTF_8);
     }
 
-    public static String buildClassFile(String source, Integer fileIndex) throws IOException {
-        return StringUtils.replaceOnce(source, "${index}", fileIndex + "");
-    }
-
 }

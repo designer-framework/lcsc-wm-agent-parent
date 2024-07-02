@@ -1,4 +1,4 @@
-package com.designer.turbo.configuration;
+package com.lcsc.turbo.swagger.configuration;
 
 import org.springframework.context.annotation.Bean;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -19,7 +19,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class Swagger2AutoConfiguration {
 
     @Bean
-    public Docket createRestApi() {
+    public Docket turboSwagger2Docket() {
         //
         ApiInfo apiInfo = new ApiInfoBuilder()
                 .title("测试项目API")

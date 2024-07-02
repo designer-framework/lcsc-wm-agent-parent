@@ -1,8 +1,7 @@
-package com.designer.turbo.reader;
+package com.lcsc.turbo.loader;
 
+import com.lcsc.turbo.common.utils.AsyncUtils;
 import lombok.Setter;
-import lombok.SneakyThrows;
-import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.FactoryBean;
@@ -13,17 +12,27 @@ import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
+import org.springframework.boot.context.properties.bind.Bindable;
+import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.boot.type.classreading.ConcurrentReferenceCachingMetadataReaderFactory;
 import org.springframework.context.*;
 import org.springframework.context.annotation.AnnotationConfigUtils;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.Ordered;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.PriorityOrdered;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.ResolvableType;
+import org.springframework.core.env.Environment;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
 
-import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * @description:
@@ -74,9 +83,7 @@ public class MetadataReaderFactoryApplicationContextInitializer implements Appli
             if (registry.containsBeanDefinition(BEAN_NAME)) {
                 registry.removeBeanDefinition(BEAN_NAME);
             }
-            BeanDefinition definition = BeanDefinitionBuilder
-                    .genericBeanDefinition(PreLoadSharedMetadataReaderFactoryBean.class, PreLoadSharedMetadataReaderFactoryBean::new)
-                    .getBeanDefinition();
+            BeanDefinition definition = BeanDefinitionBuilder.genericBeanDefinition(PreLoadSharedMetadataReaderFactoryBean.class, PreLoadSharedMetadataReaderFactoryBean::new).getBeanDefinition();
             registry.registerBeanDefinition(BEAN_NAME, definition);
         }
 
@@ -91,41 +98,80 @@ public class MetadataReaderFactoryApplicationContextInitializer implements Appli
         /**
          * {@link FactoryBean} to create the shared {@link MetadataReaderFactory}.
          */
-        static class PreLoadSharedMetadataReaderFactoryBean implements FactoryBean<ConcurrentReferenceCachingMetadataReaderFactory>, BeanClassLoaderAware, ApplicationContextAware, ApplicationListener<ContextRefreshedEvent> {
+        static class PreLoadSharedMetadataReaderFactoryBean implements FactoryBean<ConcurrentReferenceCachingMetadataReaderFactory>, ResourceLoaderAware, BeanClassLoaderAware, EnvironmentAware, ApplicationListener<ContextRefreshedEvent> {
 
-            private final Object lock = new Object();
-
+            private final ReadWriteLock lock = new ReentrantReadWriteLock();
+            private final Lock readLock = lock.readLock();
+            private final Lock writeLock = lock.writeLock();
             private ConcurrentReferenceCachingMetadataReaderFactory metadataReaderFactory;
 
             @Setter
-            private ApplicationContext applicationContext;
+            private ResourceLoader resourceLoader;
 
-            @SneakyThrows
-            @Override
-            public void setBeanClassLoader(ClassLoader classLoader) {
-                synchronized (lock) {
-                    metadataReaderFactory = new ConcurrentReferenceCachingMetadataReaderFactory(classLoader);
-                    String[] defaultScan = applicationContext.getEnvironment().getProperty("defaultScan", String[].class);
-                    if (ArrayUtils.isNotEmpty(defaultScan)) {
-                        parallelPreLoad(defaultScan);
-                    } else {
-                        parallelPreLoad();
-                    }
-                }
-            }
+            @Setter
+            private Environment environment;
+
+            @Setter
+            private AtomicBoolean initialized = new AtomicBoolean(false);
 
             /**
              * @param classLoader the owning class loader
-             * @see org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider#scanCandidateComponents(java.lang.String)
              */
-            private void parallelPreLoad(String[] defaultScan) throws IOException {
-                PathMatchingResourcePatternResolver pathMatchingResourcePatternResolver = new PathMatchingResourcePatternResolver();
-                pathMatchingResourcePatternResolver.getResources("");
+            @Override
+            public void setBeanClassLoader(ClassLoader classLoader) {
+                metadataReaderFactory = new ConcurrentReferenceCachingMetadataReaderFactory(classLoader);
+
+                if (initialized.compareAndSet(false, true)) {
+
+                    ParallelClassPathScanningCandidateComponent scanningCandidateComponent = new ParallelClassPathScanningCandidateComponent(environment);
+                    scanningCandidateComponent.setResourceLoader(resourceLoader);
+                    scanningCandidateComponent.setMetadataReaderFactory(metadataReaderFactory);
+
+                    for (String preScanPath : resolvePreScanPath()) {
+                        readLock.lock();
+                        AsyncUtils.submit(() -> {
+                            try {
+                                scanningCandidateComponent.findCandidateComponents(preScanPath);
+                            } catch (Exception e) {
+                                readLock.unlock();
+                            } finally {
+                                readLock.unlock();
+                            }
+                            return null;
+                        });
+                    }
+
+                }
+
             }
 
+            /**
+             * 待扫描的包
+             *
+             * @return
+             */
+            private List<String> resolvePreScanPath() {
+                return
+                        (List<String>) Binder.get(environment)
+                                .bind("defaultScan", Bindable.of(ResolvableType.forType(new ParameterizedTypeReference<List<String>>() {
+                                })))
+                                .orElse(Arrays.asList("com.lcsc"));
+            }
+
+            /**
+             * 只会被读取一次
+             *
+             * @return
+             * @throws Exception
+             */
             @Override
             public ConcurrentReferenceCachingMetadataReaderFactory getObject() throws Exception {
-                return metadataReaderFactory;
+                writeLock.lock();
+                try {
+                    return metadataReaderFactory;
+                } finally {
+                    writeLock.unlock();
+                }
             }
 
             @Override
