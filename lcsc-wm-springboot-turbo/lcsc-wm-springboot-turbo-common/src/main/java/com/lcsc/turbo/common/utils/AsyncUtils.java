@@ -1,30 +1,27 @@
 package com.lcsc.turbo.common.utils;
 
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 public class AsyncUtils {
 
-    private static final ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
-
-    static {
-        threadPoolTaskExecutor.setCorePoolSize(Runtime.getRuntime().availableProcessors() * 2);
-        threadPoolTaskExecutor.setQueueCapacity(0);
-        threadPoolTaskExecutor.initialize();
-    }
+    private static final ExecutorService THREAD_POOL_EXECUTOR = new ThreadPoolExecutor(
+            Runtime.getRuntime().availableProcessors() * 2
+            , Runtime.getRuntime().availableProcessors() * 2
+            , 10, TimeUnit.SECONDS
+            , new LinkedBlockingDeque<>()
+            , new ThreadPoolExecutor.CallerRunsPolicy()
+    );
 
     public static void shutdown() {
-        threadPoolTaskExecutor.shutdown();
+        THREAD_POOL_EXECUTOR.shutdown();
     }
 
     public static <T> Future<T> submit(Callable<T> tCallable) {
-        return threadPoolTaskExecutor.submit(tCallable);
+        return THREAD_POOL_EXECUTOR.submit(tCallable);
     }
 
     public static void submit(Runnable tCallable) {
-        threadPoolTaskExecutor.submit(tCallable);
+        THREAD_POOL_EXECUTOR.submit(tCallable);
     }
 
 }

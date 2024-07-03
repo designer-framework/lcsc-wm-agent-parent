@@ -12,7 +12,6 @@ import org.springframework.core.type.classreading.MetadataReaderFactory;
 
 import java.io.IOException;
 import java.util.Set;
-import java.util.concurrent.CountDownLatch;
 
 @Slf4j
 public class ParallelClassPathScanningCandidateComponent extends ClassPathScanningCandidateComponentProvider {
@@ -65,52 +64,23 @@ public class ParallelClassPathScanningCandidateComponent extends ClassPathScanni
             String packageSearchPath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + resolveBasePackage(basePackage) + '/' + DEFAULT_RESOURCE_PATTERN;
             Resource[] resources = resourcePatternResolver.getResources(packageSearchPath);
 
-            int worker = Runtime.getRuntime().availableProcessors();
-            int resourcesSize = resources.length;
+            log.error("并行扫描{}, 总文件个数: {}", basePackage, resources.length);
 
-            int forkSize = resourcesSize / worker;
+            for (Resource resource : resources) {
 
-            if (forkSize < 1000) {
-                log.error("跳过并行扫描{}, 总文件个数: {}, 分片大小: {}", basePackage, resourcesSize, forkSize);
-                return null;
-            } else {
-                log.error("启动并行扫描{}, 总文件个数: {}, 分片大小: {}", basePackage, resourcesSize, forkSize);
-            }
+                if (resource.isReadable()) {
 
-            int currCursor = 0;
-            int remaining = resourcesSize;
-            CountDownLatch countDownLatch01 = new CountDownLatch(((resourcesSize % worker) == 0) ? worker : worker + 1);
-            while (currCursor < resourcesSize) {
-
-                int cursorStart = currCursor;
-                int cursorEnd = currCursor + forkSize;
-
-                AsyncUtils.submit(() -> {
-                    System.out.println(cursorStart + "=" + (cursorEnd - 1));
-                    resolveResource(resources, cursorStart, cursorEnd - 1);
-                    countDownLatch01.countDown();
-                    System.out.println(countDownLatch01.getCount());
-                });
-
-                currCursor = cursorEnd;
-
-                remaining = remaining - forkSize;
-
-                if (forkSize > remaining) {
-
-                    int cursorStart_ = resourcesSize - remaining;
                     AsyncUtils.submit(() -> {
-                        System.out.println(cursorStart_ + "=" + (resourcesSize - 1));
-                        resolveResource(resources, cursorStart_, resourcesSize - 1);
-                        countDownLatch01.countDown();
-                        System.out.println(countDownLatch01.getCount());
+                        try {
+                            metadataReaderFactory.getMetadataReader(resource);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                     });
-                    break;
 
                 }
 
             }
-            countDownLatch01.await();
 
         } catch (IOException ex) {
             log.error("", ex);
@@ -118,25 +88,6 @@ public class ParallelClassPathScanningCandidateComponent extends ClassPathScanni
         }
 
         return null;
-    }
-
-    protected void resolveResource(Resource[] resources, int start, int end) {
-        for (int i = start; i <= end; i++) {
-
-            Resource resource = resources[i];
-
-            if (resource.isReadable()) {
-
-                try {
-                    metadataReaderFactory.getMetadataReader(resource);
-                } catch (Throwable ex) {
-                    log.error("", ex);
-                    throw new BeanDefinitionStoreException("Failed to read candidate component class: " + resource, ex);
-                }
-
-            }
-
-        }
     }
 
 }
