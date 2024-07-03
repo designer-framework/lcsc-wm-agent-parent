@@ -25,6 +25,8 @@
         <module>lcsc-wm-springboot-turbo-swagger</module>
 
         <module>lcsc-wm-springboot-turbo-aggregation-starter</module>
+
+        <module>lcsc-wm-springboot-turbo-web-starter</module>
     </modules>
 
     <dependencies>

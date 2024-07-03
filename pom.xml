@@ -40,7 +40,6 @@
         <module>lcsc-wm-spring-profiler-agent</module>
 
         <module>lcsc-wm-springboot-turbo</module>
-        <module>lcsc-wm-springboot-web</module>
 
     </modules>
 
