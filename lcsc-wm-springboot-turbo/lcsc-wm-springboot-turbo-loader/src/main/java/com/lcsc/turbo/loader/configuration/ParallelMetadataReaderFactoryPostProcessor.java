@@ -27,10 +27,15 @@ class ParallelMetadataReaderFactoryPostProcessor implements BeanDefinitionRegist
     }
 
     private void replaceMetadataReaderFactory(BeanDefinitionRegistry registry) {
+        //
         if (registry.containsBeanDefinition(ParallelMetadataReaderFactoryApplicationContextInitializer.BEAN_NAME)) {
             registry.removeBeanDefinition(ParallelMetadataReaderFactoryApplicationContextInitializer.BEAN_NAME);
         }
-        BeanDefinition definition = BeanDefinitionBuilder.genericBeanDefinition(ParallelLoadSharedMetadataReaderFactoryBean.class, ParallelLoadSharedMetadataReaderFactoryBean::new).getBeanDefinition();
+
+        BeanDefinition definition = BeanDefinitionBuilder
+                .genericBeanDefinition(ParallelLoadSharedMetadataReaderFactoryBean.class, ParallelLoadSharedMetadataReaderFactoryBean::new)
+                .getBeanDefinition();
+
         registry.registerBeanDefinition(ParallelMetadataReaderFactoryApplicationContextInitializer.BEAN_NAME, definition);
     }
 
