@@ -34,11 +34,15 @@ public class TurboRunnable implements Runnable {
             AsyncUtils.submit(() -> {
 
                 try {
+
                     callable.run();
+                    state.countDown();
+
                 } catch (Exception e) {
+                    
                     interrupted.compareAndSet(false, true);
                     exceptions.add(e);
-                } finally {
+
                     state.countDown();
                 }
 

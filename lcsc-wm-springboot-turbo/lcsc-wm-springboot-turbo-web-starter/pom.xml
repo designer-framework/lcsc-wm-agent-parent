@@ -9,12 +9,12 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>lcsc-wm-springboot-web</artifactId>
+    <artifactId>lcsc-wm-springboot-turbo-web-starter</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>lcsc-wm-agent-web</name>
-    <description>lcsc-wm-agent-web</description>
+    <name>lcsc-wm-springboot-turbo-web-starter</name>
+    <description>lcsc-wm-springboot-turbo-web-starter</description>
 
     <properties>
         <java.version>8</java.version>

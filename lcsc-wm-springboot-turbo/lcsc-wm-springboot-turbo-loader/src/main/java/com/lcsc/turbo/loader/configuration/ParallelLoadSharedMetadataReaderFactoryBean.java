@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.FactoryBean;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.boot.context.properties.source.ConfigurationPropertyName;
@@ -21,11 +22,13 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternUtils;
 import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
+import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.util.ClassUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @description:
@@ -36,20 +39,22 @@ import java.util.List;
 public class ParallelLoadSharedMetadataReaderFactoryBean implements FactoryBean<ConcurrentReferenceCachingMetadataReaderFactory>, BeanClassLoaderAware, EnvironmentAware, ResourceLoaderAware, ApplicationListener<ContextRefreshedEvent> {
 
     @Setter
+    private static ConcurrentReferenceCachingMetadataReaderFactory metadataReaderFactory;
+
+    @Setter
     private Environment environment;
 
     @Setter
     private ResourceLoader resourceLoader;
 
-    @Setter
-    private ConcurrentReferenceCachingMetadataReaderFactory metadataReaderFactory;
-
     /**
      * @param classLoader the owning class loader
      */
     @Override
-    public void setBeanClassLoader(ClassLoader classLoader) {
-        metadataReaderFactory = new ConcurrentReferenceCachingMetadataReaderFactory(classLoader);
+    public synchronized void setBeanClassLoader(ClassLoader classLoader) {
+        if (metadataReaderFactory == null) {
+            metadataReaderFactory = new ConcurrentReferenceCachingMetadataReaderFactory(classLoader);
+        }
     }
 
     /**
@@ -60,7 +65,11 @@ public class ParallelLoadSharedMetadataReaderFactoryBean implements FactoryBean<
      */
     @Override
     public ConcurrentReferenceCachingMetadataReaderFactory getObject() throws Exception {
+        //preGet();
+        return metadataReaderFactory;
+    }
 
+    void preGet() throws InterruptedException, IOException {
         //
         ParallelLoadClassResourcesProperties properties = Binder.get(environment)
                 .bind(ConfigurationPropertyName.of("spring.turbo.loader"), Bindable.of(ParallelLoadClassResourcesProperties.class))
@@ -68,30 +77,27 @@ public class ParallelLoadSharedMetadataReaderFactoryBean implements FactoryBean<
 
         if (properties.isEnabled()) {
             //
-
-            ClassPathScanningCandidateComponentProvider scanningCandidateComponent = new ClassPathScanningCandidateComponentProvider(false, environment);
-            scanningCandidateComponent.setResourceLoader(resourceLoader);
-            scanningCandidateComponent.setMetadataReaderFactory(metadataReaderFactory);
-
             for (String scanPackage : properties.getScanPackages()) {
 
                 List<TurboRunnable.TRunnable> list = new ArrayList<>();
 
-                try {
-                    String packageSearchPath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + ClassUtils.convertClassNameToResourcePath(scanPackage) + "/**/*.class";
-                    Resource[] resources = ResourcePatternUtils.getResourcePatternResolver(resourceLoader).getResources(packageSearchPath);
-
-                    for (Resource resource : resources) {
-
-                        list.add(() -> {
-                            metadataReaderFactory.getMetadataReader(resource);
-                        });
-
+                ClassPathScanningCandidateComponentProvider classPathScanningCandidateComponentProvider = new ClassPathScanningCandidateComponentProvider(false) {
+                    @Override
+                    protected boolean isCandidateComponent(MetadataReader metadataReader) throws IOException {
+                        return true;
                     }
+                };
+                classPathScanningCandidateComponentProvider.setResourceLoader(resourceLoader);
+                classPathScanningCandidateComponentProvider.setEnvironment(environment);
+                classPathScanningCandidateComponentProvider.setMetadataReaderFactory(metadataReaderFactory);
+                Set<BeanDefinition> candidateComponents = classPathScanningCandidateComponentProvider.findCandidateComponents("org");
 
-                } catch (IOException e) {
+                String packageSearchPath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + ClassUtils.convertClassNameToResourcePath(scanPackage) + "/**/*.class";
+                Resource[] resources = ResourcePatternUtils.getResourcePatternResolver(resourceLoader).getResources(packageSearchPath);
 
-                    throw new RuntimeException(e);
+                for (Resource resource : resources) {
+
+                    metadataReaderFactory.getMetadataReader(resource);
 
                 }
 
@@ -103,7 +109,6 @@ public class ParallelLoadSharedMetadataReaderFactoryBean implements FactoryBean<
 
         }
 
-        return metadataReaderFactory;
     }
 
     @Override

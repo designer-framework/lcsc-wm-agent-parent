@@ -7,7 +7,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @EnableApolloConfig
-@EnableFeignClients
+@EnableFeignClients(value = "org")
 @EnableDiscoveryClient(autoRegister = false)
 @SpringBootApplication(scanBasePackages = {"com.designer", "com.fasterxml", "org.apache"})
 public class TestClassLoaderApplication {
