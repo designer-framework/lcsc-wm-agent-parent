@@ -1,12 +1,11 @@
 package com.lcsc.turbo.loader.configuration;
 
-import com.lcsc.turbo.common.utils.TurboRunnable;
+import com.lcsc.turbo.loader.io.ResourceUtils;
 import com.lcsc.turbo.loader.properties.ParallelLoadClassResourcesProperties;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.FactoryBean;
-import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.boot.context.properties.source.ConfigurationPropertyName;
@@ -14,21 +13,13 @@ import org.springframework.boot.type.classreading.ConcurrentReferenceCachingMeta
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.ResourceLoaderAware;
-import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternUtils;
 import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
-import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.util.ClassUtils;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 /**
  * @description:
@@ -65,11 +56,6 @@ public class ParallelLoadSharedMetadataReaderFactoryBean implements FactoryBean<
      */
     @Override
     public ConcurrentReferenceCachingMetadataReaderFactory getObject() throws Exception {
-        //preGet();
-        return metadataReaderFactory;
-    }
-
-    void preGet() throws InterruptedException, IOException {
         //
         ParallelLoadClassResourcesProperties properties = Binder.get(environment)
                 .bind(ConfigurationPropertyName.of("spring.turbo.loader"), Bindable.of(ParallelLoadClassResourcesProperties.class))
@@ -79,36 +65,17 @@ public class ParallelLoadSharedMetadataReaderFactoryBean implements FactoryBean<
             //
             for (String scanPackage : properties.getScanPackages()) {
 
-                List<TurboRunnable.TRunnable> list = new ArrayList<>();
+                String resolvedBasePackage = ClassUtils.convertClassNameToResourcePath(environment.resolveRequiredPlaceholders(scanPackage));
+                String packageSearchPath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + resolvedBasePackage + "/**/*.class";
 
-                ClassPathScanningCandidateComponentProvider classPathScanningCandidateComponentProvider = new ClassPathScanningCandidateComponentProvider(false) {
-                    @Override
-                    protected boolean isCandidateComponent(MetadataReader metadataReader) throws IOException {
-                        return true;
-                    }
-                };
-                classPathScanningCandidateComponentProvider.setResourceLoader(resourceLoader);
-                classPathScanningCandidateComponentProvider.setEnvironment(environment);
-                classPathScanningCandidateComponentProvider.setMetadataReaderFactory(metadataReaderFactory);
-                Set<BeanDefinition> candidateComponents = classPathScanningCandidateComponentProvider.findCandidateComponents("org");
-
-                String packageSearchPath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + ClassUtils.convertClassNameToResourcePath(scanPackage) + "/**/*.class";
-                Resource[] resources = ResourcePatternUtils.getResourcePatternResolver(resourceLoader).getResources(packageSearchPath);
-
-                for (Resource resource : resources) {
-
-                    metadataReaderFactory.getMetadataReader(resource);
-
-                }
-
-                TurboRunnable turboRunnable = new TurboRunnable(list);
-                turboRunnable.run();
-                turboRunnable.completion();
+                ResourcePatternResolver resourcePatternResolver = ResourcePatternUtils.getResourcePatternResolver(resourceLoader);
+                ResourceUtils.doRead(metadataReaderFactory, resourcePatternResolver.getResources(packageSearchPath), resolvedBasePackage);
 
             }
 
         }
 
+        return metadataReaderFactory;
     }
 
     @Override

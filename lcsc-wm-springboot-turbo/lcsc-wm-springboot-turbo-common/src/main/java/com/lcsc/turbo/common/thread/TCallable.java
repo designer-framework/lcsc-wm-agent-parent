@@ -1,0 +1,30 @@
+package com.lcsc.turbo.common.thread;
+
+import lombok.Getter;
+
+import java.util.concurrent.Callable;
+
+@Getter
+public abstract class TCallable<T> implements Callable<T> {
+
+    private Callback<T> callback;
+
+    public TCallable(Callback<T> callback) {
+        this.callback = callback;
+    }
+
+    @Override
+    public final T call() {
+        try {
+            T t = doCall();
+            callback.onSuccess(t);
+            return t;
+        } catch (Exception e) {
+            callback.onException(e);
+            return null;
+        }
+    }
+
+    public abstract T doCall() throws Exception;
+
+}

@@ -9,7 +9,9 @@ import com.ctrip.framework.apollo.spi.ApolloInjectorCustomizer;
 import com.ctrip.framework.apollo.spi.ConfigFactory;
 import com.ctrip.framework.apollo.spi.ConfigFactoryManager;
 import com.google.common.collect.Maps;
-import com.lcsc.turbo.common.utils.AsyncUtils;
+import com.lcsc.turbo.common.thread.AsyncUtils;
+import com.lcsc.turbo.common.thread.Callback;
+import com.lcsc.turbo.common.thread.TCallable;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Proxy;
@@ -54,7 +56,12 @@ public class ConfigManagerInjectorCustomizer implements ApolloInjectorCustomizer
 
         @Override
         public Config getConfig(String namespace) {
-            Future<Config> configFuture = AsyncUtils.submit(() -> getConfig0(namespace));
+            Future<Config> configFuture = AsyncUtils.submit(new TCallable<Config>(new Callback<>()) {
+                @Override
+                public Config doCall() throws Exception {
+                    return getConfig0(namespace);
+                }
+            });
             m_configFutures.add(configFuture);
 
             return (Config) Proxy.newProxyInstance(

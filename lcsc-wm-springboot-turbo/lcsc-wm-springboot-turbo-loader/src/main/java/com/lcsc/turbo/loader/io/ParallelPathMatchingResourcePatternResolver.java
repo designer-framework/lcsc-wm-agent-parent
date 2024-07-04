@@ -1,6 +1,6 @@
 package com.lcsc.turbo.loader.io;
 
-import com.lcsc.turbo.common.utils.AsyncUtils;
+import com.lcsc.turbo.common.thread.AsyncUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
@@ -29,8 +29,6 @@ public class ParallelPathMatchingResourcePatternResolver extends PathMatchingRes
     }
 
     public static void main(String[] args) throws IOException {
-        AsyncUtils.submit(() -> {
-        });
 
         StopWatch stopWatch = new StopWatch();
 
