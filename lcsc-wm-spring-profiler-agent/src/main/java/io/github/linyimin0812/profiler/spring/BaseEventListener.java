@@ -18,6 +18,10 @@ import java.util.List;
  */
 public abstract class BaseEventListener implements EventListener {
 
+    protected static final String[] NONE = new String[]{};
+
+    private static final List<Event.Type> LISTENERS = Arrays.asList(Event.Type.AT_ENTER, Event.Type.AT_EXIT, Event.Type.AT_EXCEPTION_EXIT);
+
     protected final Logger logger = LogFactory.getStartupLogger();
 
     @Override
@@ -89,13 +93,15 @@ public abstract class BaseEventListener implements EventListener {
         return true;
     }
 
-    protected abstract void atEnter(AtEnterEvent event);
+    protected void atEnter(AtEnterEvent event) {
+    }
 
-    protected abstract void atExit(InvokeEvent event);
+    protected void atExit(InvokeEvent event) {
+    }
 
     @Override
     public List<Event.Type> listen() {
-        return Arrays.asList(Event.Type.AT_ENTER, Event.Type.AT_EXIT, Event.Type.AT_EXCEPTION_EXIT);
+        return LISTENERS;
     }
 
     @Override

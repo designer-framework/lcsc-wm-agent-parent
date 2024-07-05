@@ -4,3 +4,4 @@ io.github.linyimin0812.profiler.spring.analyzer.bean.SmartInitializingStep2GetSi
 io.github.linyimin0812.profiler.spring.analyzer.bean.SmartInitializingStep3AfterInstantiatedEventListener
 #Apollo
 io.github.linyimin0812.profiler.spring.analyzer.apollo.LoadApolloConfigListener
+io.github.linyimin0812.profiler.spring.analyzer.aspectj.AspectjTurboListener

@@ -12,20 +12,21 @@ import com.google.common.collect.Maps;
 import com.lcsc.turbo.common.thread.AsyncUtils;
 import com.lcsc.turbo.common.thread.Callback;
 import com.lcsc.turbo.common.thread.TCallable;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Proxy;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 
 /**
  * 修改默认的ConfigManager
  */
-public class ConfigManagerInjectorCustomizer implements ApolloInjectorCustomizer {
+@Slf4j
+public class AsyncConfigManagerInjectorCustomizer implements ApolloInjectorCustomizer {
 
-    final static Set<Future<?>> m_configFutures = new HashSet<>();
+    final static Map<String, Future<Config>> m_configFutureMap = new ConcurrentHashMap<>();
 
     @Override
     public <T> T getInstance(Class<T> clazz) {
@@ -44,7 +45,6 @@ public class ConfigManagerInjectorCustomizer implements ApolloInjectorCustomizer
     /**
      * @see com.ctrip.framework.apollo.internals.DefaultConfigManager
      */
-    @Slf4j
     private static class AsyncLoadConfigManager implements ConfigManager {
         private final ConfigFactoryManager m_factoryManager;
         private final Map<String, Config> m_configs = Maps.newConcurrentMap();
@@ -54,21 +54,37 @@ public class ConfigManagerInjectorCustomizer implements ApolloInjectorCustomizer
             m_factoryManager = ApolloInjector.getInstance(ConfigFactoryManager.class);
         }
 
+        @SneakyThrows
         @Override
         public Config getConfig(String namespace) {
-            Future<Config> configFuture = AsyncUtils.submit(new TCallable<Config>(new Callback<>()) {
-                @Override
-                public Config doCall() throws Exception {
-                    return getConfig0(namespace);
-                }
-            });
-            m_configFutures.add(configFuture);
 
-            return (Config) Proxy.newProxyInstance(
-                    Thread.currentThread().getContextClassLoader()
-                    , new Class[]{Config.class}
-                    , (proxy, method, args) -> method.invoke(configFuture.get(), args)
-            );
+            synchronized (namespace.intern()) {
+
+                if (m_configFutureMap.containsKey(namespace)) {
+
+                    return m_configFutureMap.get(namespace).get();
+
+                } else {
+
+                    Future<Config> configFuture = AsyncUtils.submit(new TCallable<Config>(new Callback<>()) {
+                        @Override
+                        public Config doCall() throws Exception {
+                            return getConfig0(namespace);
+                        }
+                    });
+
+                    m_configFutureMap.put(namespace, configFuture);
+
+                    return (Config) Proxy.newProxyInstance(
+                            Thread.currentThread().getContextClassLoader()
+                            , new Class[]{Config.class}
+                            , (proxy, method, args) -> method.invoke(configFuture.get(), args)
+                    );
+
+                }
+
+            }
+
         }
 
         private Config getConfig0(String namespace) {
