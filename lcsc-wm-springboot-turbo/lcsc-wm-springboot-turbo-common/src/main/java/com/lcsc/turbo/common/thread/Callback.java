@@ -1,11 +1,20 @@
 package com.lcsc.turbo.common.thread;
 
-public class Callback<T> {
+import org.springframework.util.concurrent.ListenableFutureCallback;
 
+public class Callback<T> implements ListenableFutureCallback<T> {
+    private String id;
+
+    public Callback(String id) {
+        this.id = id;
+    }
+
+    @Override
     public void onSuccess(T result) {
     }
 
-    public void onException(Throwable e) {
+    @Override
+    public void onFailure(Throwable e) {
         System.out.println("异常" + e);
         System.exit(0);
     }

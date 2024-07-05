@@ -9,13 +9,9 @@ import com.ctrip.framework.apollo.spi.ApolloInjectorCustomizer;
 import com.ctrip.framework.apollo.spi.ConfigFactory;
 import com.ctrip.framework.apollo.spi.ConfigFactoryManager;
 import com.google.common.collect.Maps;
-import com.lcsc.turbo.common.thread.AsyncUtils;
-import com.lcsc.turbo.common.thread.Callback;
-import com.lcsc.turbo.common.thread.TCallable;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
-import java.lang.reflect.Proxy;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
@@ -57,44 +53,10 @@ public class AsyncConfigManagerInjectorCustomizer implements ApolloInjectorCusto
         @SneakyThrows
         @Override
         public Config getConfig(String namespace) {
-
-            synchronized (namespace.intern()) {
-
-                if (m_configFutureMap.containsKey(namespace)) {
-
-                    return m_configFutureMap.get(namespace).get();
-
-                } else {
-
-                    Future<Config> configFuture = AsyncUtils.submit(new TCallable<Config>(new Callback<>()) {
-                        @Override
-                        public Config doCall() throws Exception {
-                            return getConfig0(namespace);
-                        }
-                    });
-
-                    m_configFutureMap.put(namespace, configFuture);
-
-                    return (Config) Proxy.newProxyInstance(
-                            Thread.currentThread().getContextClassLoader()
-                            , new Class[]{Config.class}
-                            , (proxy, method, args) -> method.invoke(configFuture.get(), args)
-                    );
-
-                }
-
-            }
-
-        }
-
-        private Config getConfig0(String namespace) {
-
             Config config = m_configs.get(namespace);
 
             if (config == null) {
-                // 由this改成namespace.intern()
                 synchronized (namespace.intern()) {
-
                     config = m_configs.get(namespace);
 
                     if (config == null) {
@@ -103,9 +65,7 @@ public class AsyncConfigManagerInjectorCustomizer implements ApolloInjectorCusto
                         config = factory.create(namespace);
                         m_configs.put(namespace, config);
                     }
-
                 }
-
             }
 
             return config;

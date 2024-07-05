@@ -1,10 +1,11 @@
 package com.lcsc.turbo.common.thread;
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.util.concurrent.ListenableFutureCallback;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
@@ -29,31 +30,17 @@ public class AsyncUtils {
         Runtime.getRuntime().addShutdownHook(new Thread(EXECUTOR::shutdown));
     }
 
-    public static <T> void doInvokeAll(List<TCallable<T>> tasks) {
-        doInvokeAll(tasks, null);
-    }
-
-    public static <T> void doInvokeAll(List<TCallable<T>> callables, Callback<T> callback) {
+    @SneakyThrows
+    public static <T> void doInvokeAll(List<TCallable<T>> callables) {
         //
-        if (callback == null) {
-            for (TCallable<T> callable : callables) {
-                Future<T> submit = EXECUTOR.submit(callable);
-            }
-        } else {
-            for (TCallable<T> callable : callables) {
-                ListenableFuture<T> tListenableFuture = EXECUTOR.submitListenable(callable);
-                tListenableFuture.addCallback(new ListenableFutureCallback<T>() {
-                    @Override
-                    public void onFailure(Throwable ex) {
-                        callback.onException(ex);
-                    }
-
-                    @Override
-                    public void onSuccess(T result) {
-                        callback.onSuccess(result);
-                    }
-                });
-            }
+        List<ListenableFuture<T>> list = new ArrayList<>();
+        for (TCallable<T> callable : callables) {
+            ListenableFuture<T> tListenableFuture = EXECUTOR.submitListenable(callable);
+            tListenableFuture.addCallback(callable.getCallback());
+            list.add(tListenableFuture);
+        }
+        for (ListenableFuture<T> tListenableFuture : list) {
+            tListenableFuture.get();
         }
     }
 

@@ -7,7 +7,7 @@ import java.util.concurrent.Callable;
 @Getter
 public abstract class TCallable<T> implements Callable<T> {
 
-    private Callback<T> callback;
+    private final Callback<T> callback;
 
     public TCallable(Callback<T> callback) {
         this.callback = callback;
@@ -20,7 +20,7 @@ public abstract class TCallable<T> implements Callable<T> {
             callback.onSuccess(t);
             return t;
         } catch (Exception e) {
-            callback.onException(e);
+            callback.onFailure(e);
             return null;
         }
     }
