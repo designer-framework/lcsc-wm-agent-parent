@@ -5,6 +5,7 @@ import com.ctrip.framework.apollo.spring.boot.ApolloApplicationContextInitialize
 import com.ctrip.framework.apollo.spring.config.PropertySourcesConstants;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -14,7 +15,8 @@ import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.MutablePropertySources;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Future;
 
 /**
@@ -25,21 +27,21 @@ public class AsyncApolloApplicationContextInitializer extends ApolloApplicationC
 
     private static final String ApolloTurboPropertySource = "ApolloTurboPropertySource";
 
-    private static final MapPropertySource enabledApolloBootstrapPropertySource = new MapPropertySource(
-            ApolloTurboPropertySource
-            , Collections.singletonMap(PropertySourcesConstants.APOLLO_BOOTSTRAP_ENABLED, "true") //
-    );
+    private static final MapPropertySource enabledApolloBootstrapPropertySource;
 
-    @Override
-    public void initialize(ConfigurableApplicationContext context) {
-        ConfigurableEnvironment environment = context.getEnvironment();
-        addApolloTurboPropertySources(environment.getPropertySources());
-        super.initialize(context);
+    static {
+        Map<String, Object> turboPropertyMap = new HashMap<>();
+        turboPropertyMap.put(PropertySourcesConstants.APOLLO_BOOTSTRAP_ENABLED, "true");
+        turboPropertyMap.put(PropertySourcesConstants.APOLLO_BOOTSTRAP_EAGER_LOAD_ENABLED, "true");
+        enabledApolloBootstrapPropertySource = new MapPropertySource(ApolloTurboPropertySource, turboPropertyMap);
     }
 
-    private void addApolloTurboPropertySources(MutablePropertySources propertySources) {
-        if (!propertySources.contains(ApolloTurboPropertySource)) {
-            propertySources.addLast(enabledApolloBootstrapPropertySource);
+    @Override
+    public void postProcessEnvironment(ConfigurableEnvironment configurableEnvironment, SpringApplication springApplication) {
+        MutablePropertySources propertySources = configurableEnvironment.getPropertySources();
+        if (!propertySources.contains(PropertySourcesConstants.APOLLO_BOOTSTRAP_PROPERTY_SOURCE_NAME)) {
+            addApolloTurboPropertySources(propertySources);
+            super.postProcessEnvironment(configurableEnvironment, springApplication);
         }
     }
 
@@ -47,6 +49,16 @@ public class AsyncApolloApplicationContextInitializer extends ApolloApplicationC
     protected void initialize(ConfigurableEnvironment environment) {
         super.initialize(environment);
         concurrentInitializeConfig();
+    }
+
+    @Override
+    public void initialize(ConfigurableApplicationContext context) {
+    }
+
+    private void addApolloTurboPropertySources(MutablePropertySources propertySources) {
+        if (!propertySources.contains(ApolloTurboPropertySource)) {
+            propertySources.addLast(enabledApolloBootstrapPropertySource);
+        }
     }
 
     @Override
