@@ -1,8 +1,6 @@
 package com.lcsc.turbo.feign;
 
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
@@ -15,6 +13,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.function.SingletonSupplier;
 
 import java.lang.reflect.Proxy;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 /**
@@ -25,16 +24,18 @@ import java.util.function.Supplier;
  * 1. 基于AnnotationInjectedBeanPostProcessor, 在注入Feign字段时, 使用懒加载进行代理
  * @see org.springframework.cloud.openfeign.EnableFeignClients
  */
-public class LazyLoadFeignClientPostProcessor implements BeanDefinitionRegistryPostProcessor, BeanFactoryAware, ResourceLoaderAware {
+public class LazyLoadFeignClientPostProcessor implements BeanDefinitionRegistryPostProcessor, ResourceLoaderAware {
 
-    ResourceLoader resourceLoader;
-    private BeanFactory beanFactory;
+    private ResourceLoader resourceLoader;
 
     /**
+     * 官方实现懒加载的方式相对复杂, 因此采用JDK动态代理简单实现懒加载
+     * <p>
+     * {@link  CommonAnnotationBeanPostProcessor#buildLazyResourceProxy(CommonAnnotationBeanPostProcessor.LookupElement, String)}
+     *
      * @param beanDefinition the merged bean definition for the bean
      * @param beanType       the actual type of the managed bean instance
      * @param beanName       the name of the bean
-     * @see CommonAnnotationBeanPostProcessor#buildLazyResourceProxy(CommonAnnotationBeanPostProcessor.LookupElement, String)
      */
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry beanDefinitionRegistry) throws BeansException {
@@ -56,7 +57,8 @@ public class LazyLoadFeignClientPostProcessor implements BeanDefinitionRegistryP
      * @return
      */
     private Supplier<?> wrapper2AsyncInstanceSupplier(FeignClientFactoryBean feignClientFactoryBean, AbstractBeanDefinition beanDefinition) {
-        SingletonSupplier<?> singletonSupplier = new SingletonSupplier<>(() -> null, beanDefinition.getInstanceSupplier());
+        SingletonSupplier<?> singletonSupplier = new SingletonSupplier<>(() -> null, Objects.requireNonNull(beanDefinition.getInstanceSupplier()));
+        //代理Feign接口实现懒加载
         return () -> Proxy.newProxyInstance(resourceLoader.getClassLoader(), new Class[]{feignClientFactoryBean.getType()}, (proxy, method, args) -> {
             return method.invoke(singletonSupplier.get(), args);
         });
@@ -64,11 +66,6 @@ public class LazyLoadFeignClientPostProcessor implements BeanDefinitionRegistryP
 
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-    }
-
-    @Override
-    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-        this.beanFactory = beanFactory;
     }
 
     @Override

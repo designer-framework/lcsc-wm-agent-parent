@@ -9,20 +9,15 @@ import com.ctrip.framework.apollo.spi.ApolloInjectorCustomizer;
 import com.ctrip.framework.apollo.spi.ConfigFactory;
 import com.ctrip.framework.apollo.spi.ConfigFactoryManager;
 import com.google.common.collect.Maps;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Future;
 
 /**
  * 修改默认的ConfigManager
  */
 @Slf4j
 public class AsyncConfigManagerInjectorCustomizer implements ApolloInjectorCustomizer {
-
-    final static Map<String, Future<Config>> m_configFutureMap = new ConcurrentHashMap<>();
 
     @Override
     public <T> T getInstance(Class<T> clazz) {
@@ -43,6 +38,7 @@ public class AsyncConfigManagerInjectorCustomizer implements ApolloInjectorCusto
      */
     private static class AsyncLoadConfigManager implements ConfigManager {
         private final ConfigFactoryManager m_factoryManager;
+
         private final Map<String, Config> m_configs = Maps.newConcurrentMap();
         private final Map<String, ConfigFile> m_configFiles = Maps.newConcurrentMap();
 
@@ -50,7 +46,6 @@ public class AsyncConfigManagerInjectorCustomizer implements ApolloInjectorCusto
             m_factoryManager = ApolloInjector.getInstance(ConfigFactoryManager.class);
         }
 
-        @SneakyThrows
         @Override
         public Config getConfig(String namespace) {
             Config config = m_configs.get(namespace);

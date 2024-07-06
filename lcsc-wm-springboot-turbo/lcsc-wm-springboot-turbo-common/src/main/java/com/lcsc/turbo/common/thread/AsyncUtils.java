@@ -33,14 +33,16 @@ public class AsyncUtils {
     @SneakyThrows
     public static <T> void doInvokeAll(List<TCallable<T>> callables) {
         //
-        List<ListenableFuture<T>> list = new ArrayList<>();
+        List<ListenableFuture<T>> listenableFutures = new ArrayList<>();
         for (TCallable<T> callable : callables) {
             ListenableFuture<T> tListenableFuture = EXECUTOR.submitListenable(callable);
             tListenableFuture.addCallback(callable.getCallback());
-            list.add(tListenableFuture);
+            listenableFutures.add(tListenableFuture);
         }
-        for (ListenableFuture<T> tListenableFuture : list) {
-            tListenableFuture.get();
+        for (ListenableFuture<T> listenableFuture : listenableFutures) {
+            if (!listenableFuture.isDone()) {
+                listenableFuture.get();
+            }
         }
     }
 

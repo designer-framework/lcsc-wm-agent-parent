@@ -9,7 +9,6 @@ import com.google.common.base.Splitter;
 import com.lcsc.turbo.common.thread.AsyncUtils;
 import com.lcsc.turbo.common.thread.Callback;
 import com.lcsc.turbo.common.thread.TCallable;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
@@ -20,11 +19,9 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.MutablePropertySources;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 /**
@@ -36,6 +33,7 @@ public class AsyncApolloApplicationContextInitializer extends ApolloApplicationC
     private static final String ApolloTurboPropertySource = "ApolloTurboPropertySource";
 
     private static final MapPropertySource enabledApolloBootstrapPropertySource;
+
     private static final Splitter NAMESPACE_SPLITTER = Splitter.on(",").omitEmptyStrings();
 
     static {
@@ -49,24 +47,37 @@ public class AsyncApolloApplicationContextInitializer extends ApolloApplicationC
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication springApplication) {
         MutablePropertySources propertySources = environment.getPropertySources();
         if (!propertySources.contains(PropertySourcesConstants.APOLLO_BOOTSTRAP_PROPERTY_SOURCE_NAME)) {
+
+            //
             addApolloTurboPropertySources(propertySources);
+
+            //
             String namespaces = environment.getProperty(PropertySourcesConstants.APOLLO_BOOTSTRAP_NAMESPACES, ConfigConsts.NAMESPACE_APPLICATION);
-            //
             log.debug("Apollo bootstrap namespaces: {}", namespaces);
-            List<TCallable<Config>> callables = NAMESPACE_SPLITTER.splitToList(namespaces).stream()
-                    .map(space -> {
 
-                        return new TCallable<Config>(getLoadCallback(namespaces)) {
-                            @Override
-                            public Config doCall() throws Exception {
-                                return ConfigService.getConfig(space);
-                            }
-                        };
-
-                    }).collect(Collectors.toList());
             //
-            AsyncUtils.doInvokeAll(callables);
+            concurrentInitializeConfig(NAMESPACE_SPLITTER.splitToList(namespaces));
+
         }
+    }
+
+    protected void concurrentInitializeConfig(List<String> namespaces) {
+        //
+        List<TCallable<Config>> callables = namespaces.stream()
+                .map(this::wrapper2TCallable)
+                .collect(Collectors.toList());
+        //
+        AsyncUtils.doInvokeAll(callables);
+    }
+
+    private TCallable<Config> wrapper2TCallable(String nameSpace) {
+        //包装线程及回调
+        return new TCallable<Config>(getLoadCallback(nameSpace)) {
+            @Override
+            public Config doCall() throws Exception {
+                return ConfigService.getConfig(nameSpace);
+            }
+        };
     }
 
     private Callback<Config> getLoadCallback(String nameSpace) {
@@ -78,16 +89,6 @@ public class AsyncApolloApplicationContextInitializer extends ApolloApplicationC
         };
     }
 
-    @Override
-    protected void initialize(ConfigurableEnvironment environment) {
-        super.initialize(environment);
-        concurrentInitializeConfig();
-    }
-
-    @Override
-    public void initialize(ConfigurableApplicationContext context) {
-    }
-
     private void addApolloTurboPropertySources(MutablePropertySources propertySources) {
         if (!propertySources.contains(ApolloTurboPropertySource)) {
             propertySources.addLast(enabledApolloBootstrapPropertySource);
@@ -95,23 +96,17 @@ public class AsyncApolloApplicationContextInitializer extends ApolloApplicationC
     }
 
     @Override
-    public int getOrder() {
-        return ApolloApplicationContextInitializer.DEFAULT_ORDER - 1;
+    protected void initialize(ConfigurableEnvironment environment) {
+        super.initialize(environment);
     }
 
-    @SneakyThrows
-    protected void concurrentInitializeConfig() {
-        //
-        Collection<Future<Config>> values = AsyncConfigManagerInjectorCustomizer.m_configFutureMap.values();
+    @Override
+    public void initialize(ConfigurableApplicationContext context) {
+    }
 
-        for (Future<Config> future : values) {
-
-            if (!future.isDone()) {
-                Config config = future.get();
-            }
-
-        }
-
+    @Override
+    public int getOrder() {
+        return ApolloApplicationContextInitializer.DEFAULT_ORDER - 1;
     }
 
 }

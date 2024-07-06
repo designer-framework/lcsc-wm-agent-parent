@@ -13,6 +13,10 @@ public abstract class TCallable<T> implements Callable<T> {
         this.callback = callback;
     }
 
+    public String getId() {
+        return callback.getId();
+    }
+
     @Override
     public final T call() {
         try {

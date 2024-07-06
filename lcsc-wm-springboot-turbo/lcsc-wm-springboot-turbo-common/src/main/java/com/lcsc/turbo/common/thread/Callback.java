@@ -1,9 +1,12 @@
 package com.lcsc.turbo.common.thread;
 
+import lombok.Getter;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
 public class Callback<T> implements ListenableFutureCallback<T> {
-    private String id;
+
+    @Getter
+    private final String id;
 
     public Callback(String id) {
         this.id = id;
