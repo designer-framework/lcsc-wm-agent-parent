@@ -1,4 +1,2 @@
 org.springframework.boot.env.EnvironmentPostProcessor=\
-  com.lcsc.turbo.apollo.AsyncApolloApplicationContextInitializer
-org.springframework.context.ApplicationContextInitializer=\
-  com.lcsc.turbo.apollo.AsyncApolloApplicationContextInitializer
+  com.lcsc.turbo.apollo.AsyncPreloadApolloConfigEnvironmentPostProcessor

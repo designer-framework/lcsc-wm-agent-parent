@@ -10,11 +10,8 @@ import lombok.Getter;
 @Getter
 public class MethodInvokeDetailExtend extends MethodInvokeDetail {
 
-    private final String invokeCountMethodAlias;
-
     public MethodInvokeDetailExtend(String methodQualifier, Object[] args) {
         super(methodQualifier, args);
-        invokeCountMethodAlias = null;
     }
 
 }

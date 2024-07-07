@@ -5,6 +5,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 
 /**
@@ -22,9 +23,9 @@ public class Test${index}Aspectj {
     }
 
     @Around("testPointcut()")
-    Object proceed(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
-        log.error(getClass().toString());
-        return proceedingJoinPoint.proceed();
+    Object proceed(ProceedingJoinPoint joinPoint) throws Throwable {
+        log.error("{}.{}", joinPoint.getTarget().getClass(), ((MethodSignature) joinPoint.getSignature()).getMethod().getName());
+        return joinPoint.proceed();
     }
 
 }

@@ -14,13 +14,11 @@ import org.kohsuke.MetaInfServices;
 @MetaInfServices(EventListener.class)
 public class LoadApolloConfigListener extends AbstractMethodInvokeDetailListener {
 
-    private static final String INVOKE_COUNT_METHOD_ALIAS = "阿波罗配置加载耗时";
-
     private static final String LISTEN_CLASS_NAME = "com.ctrip.framework.apollo.spring.boot.ApolloApplicationContextInitializer";
 
     @Override
     protected final String getFullyQualifiedNameAlias(AtEnterEvent atEnterEvent) {
-        return INVOKE_COUNT_METHOD_ALIAS;
+        return "加载Apollo耗时[常规]";
     }
 
     @Override

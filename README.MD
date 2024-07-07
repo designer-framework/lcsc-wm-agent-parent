@@ -3,16 +3,16 @@
 ~~~
 -Denv=DEV
 -XX:-RestrictContended
--Dspring.turbo.loader.scanPackages=com,org
--Dspring.turbo.loader.enabled=true
+-Dspring.turbo.loader.enabled=false
+-DXset:bcelRepositoryCaching=false
 -javaagent:D:\TeamWork\lcsc-wm-agent-parent\lcsc-wm-spring-profiler-agent\target\lcsc-wm-spring-profiler-agent-1.0-SNAPSHOT.jar
 ~~~
 
 ~~~
 -Denv=DEV
 -XX:-RestrictContended
--Dspring.turbo.loader.scanPackages=com,org
--Dspring.turbo.loader.enabled=true
+-Dspring.turbo.loader.enabled=false
+-DXset:bcelRepositoryCaching=false
 -javaagent:D:\TeamWork\lcsc-wm-agent-parent\lcsc-wm-spring-profiler-agent\target\lcsc-wm-spring-profiler-agent-1.0-SNAPSHOT.jar
 ~~~
 

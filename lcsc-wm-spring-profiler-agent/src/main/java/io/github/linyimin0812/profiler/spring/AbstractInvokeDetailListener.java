@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author: Designer
  * @date : 2024-06-25 21:06
  */
-abstract class AbstractInvokeDetailListener extends BaseEventListener {
+public abstract class AbstractInvokeDetailListener extends BaseEventListener {
 
     protected Map<String, MethodInvokeDetailExtend> INVOKE_DETAIL_MAP = new ConcurrentHashMap<>();
 

@@ -24,19 +24,19 @@ public class CopiedMain {
         //AOP
         copySource(
                 "D:\\TeamWork\\lcsc-wm-agent-parent\\test\\TemplateServiceImpl.java"
-                , "D:\\TeamWork\\lcsc-wm-agent-parent\\lcsc-wm-springboot-web\\src\\main\\java\\com\\designer\\turbo\\test\\tests\\service\\Template%sServiceImpl.java"
+                , "D:\\TeamWork\\lcsc-wm-agent-parent\\lcsc-wm-springboot-turbo\\lcsc-wm-springboot-turbo-web-starter\\src\\main\\java\\com\\designer\\turbo\\test\\tests\\service\\Template%sServiceImpl.java"
                 , "\n    @Test" +
                         "\n    public void test%s() {\n" +
                         "    }\n"
                 , 100
-                , 1000
+                , 500
         );
 
         //
         copySource(
                 "D:\\TeamWork\\lcsc-wm-agent-parent\\test\\TestAspectj.java"
-                , "D:\\TeamWork\\lcsc-wm-agent-parent\\lcsc-wm-springboot-web\\src\\main\\java\\com\\designer\\turbo\\test\\tests\\aspectj\\Test%sAspectj.java"
-                , "@Pointcut(\"(execution(* com..*.*(..)) || execution(* org..*.*(..))) && @annotation(com.designer.turbo.annotation.Test)\")"
+                , "D:\\TeamWork\\lcsc-wm-agent-parent\\lcsc-wm-springboot-turbo\\lcsc-wm-springboot-turbo-web-starter\\src\\main\\java\\com\\designer\\turbo\\test\\tests\\aspectj\\Test%sAspectj.java"
+                , "@Pointcut(\"(!execution(* com.designer.turbo.service.BaseService.*(..)) && (execution(* com.lcsc..*.*(..)) || execution(* com.designer..*.*(..)) || @annotation(com.designer.turbo.annotation.Test)))\")"
                 , 1
                 , 10
         );

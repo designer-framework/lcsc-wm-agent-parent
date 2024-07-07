@@ -20,7 +20,9 @@ public class ParallelMetadataReaderFactoryApplicationContextInitializer implemen
 
     @Override
     public void initialize(ConfigurableApplicationContext applicationContext) {
-        applicationContext.addBeanFactoryPostProcessor(new ParallelMetadataReaderFactoryPostProcessor());
+        if (applicationContext.getParent() != null) {
+            //applicationContext.addBeanFactoryPostProcessor(new ParallelMetadataReaderFactoryPostProcessor());
+        }
     }
 
     @Override

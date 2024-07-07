@@ -2,7 +2,7 @@ package io.github.linyimin0812.profiler.spring.analyzer.swagger;
 
 import io.github.linyimin0812.profiler.api.EventListener;
 import io.github.linyimin0812.profiler.api.event.AtEnterEvent;
-import io.github.linyimin0812.profiler.spring.AbstractComponentInvokeDetailListener;
+import io.github.linyimin0812.profiler.spring.AbstractInvokeDetailListener;
 import org.kohsuke.MetaInfServices;
 
 /**
@@ -12,11 +12,16 @@ import org.kohsuke.MetaInfServices;
  * {@link springfox.documentation.swagger2.annotations.EnableSwagger2}
  **/
 @MetaInfServices(EventListener.class)
-public class SwaggerAutoConfigurationListener extends AbstractComponentInvokeDetailListener {
+public class SwaggerAutoConfigurationListener extends AbstractInvokeDetailListener {
 
     @Override
     protected String[] listenClassName() {
         return new String[]{"springfox.documentation"};
+    }
+
+    @Override
+    public boolean filter(String methodName, String[] methodTypes) {
+        return true;
     }
 
     @Override
@@ -27,6 +32,16 @@ public class SwaggerAutoConfigurationListener extends AbstractComponentInvokeDet
     @Override
     protected String getFullyQualifiedNameAlias(AtEnterEvent atEnterEvent) {
         return "Swagger";
+    }
+
+    @Override
+    protected String listenMethodName() {
+        return "";
+    }
+
+    @Override
+    protected String[] listenMethodTypes() {
+        return new String[0];
     }
 
 }

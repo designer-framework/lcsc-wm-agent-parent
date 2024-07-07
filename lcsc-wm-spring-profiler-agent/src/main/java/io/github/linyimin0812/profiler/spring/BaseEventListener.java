@@ -18,7 +18,7 @@ import java.util.List;
  */
 public abstract class BaseEventListener implements EventListener {
 
-    protected static final String[] NONE = new String[]{};
+    protected static final String[] EMPTY = new String[]{};
 
     private static final List<Event.Type> LISTENERS = Arrays.asList(Event.Type.AT_ENTER, Event.Type.AT_EXIT, Event.Type.AT_EXCEPTION_EXIT);
 

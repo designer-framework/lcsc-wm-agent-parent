@@ -12,8 +12,6 @@ import com.lcsc.turbo.common.thread.TCallable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
@@ -28,13 +26,13 @@ import java.util.stream.Collectors;
  * {@link ApolloApplicationContextInitializer}
  */
 @Slf4j
-public class AsyncApolloApplicationContextInitializer extends ApolloApplicationContextInitializer implements EnvironmentPostProcessor, ApplicationContextInitializer<ConfigurableApplicationContext>, Ordered {
+public class AsyncPreloadApolloConfigEnvironmentPostProcessor implements EnvironmentPostProcessor, Ordered {
 
     private static final String ApolloTurboPropertySource = "ApolloTurboPropertySource";
 
     private static final MapPropertySource enabledApolloBootstrapPropertySource;
 
-    private static final Splitter NAMESPACE_SPLITTER = Splitter.on(",").omitEmptyStrings();
+    private static final Splitter NAMESPACE_SPLITTER = Splitter.on(",").omitEmptyStrings().trimResults();
 
     static {
         Map<String, Object> turboPropertyMap = new HashMap<>();
@@ -57,7 +55,6 @@ public class AsyncApolloApplicationContextInitializer extends ApolloApplicationC
 
             //
             concurrentInitializeConfig(NAMESPACE_SPLITTER.splitToList(namespaces));
-
         }
     }
 
@@ -93,15 +90,6 @@ public class AsyncApolloApplicationContextInitializer extends ApolloApplicationC
         if (!propertySources.contains(ApolloTurboPropertySource)) {
             propertySources.addLast(enabledApolloBootstrapPropertySource);
         }
-    }
-
-    @Override
-    protected void initialize(ConfigurableEnvironment environment) {
-        super.initialize(environment);
-    }
-
-    @Override
-    public void initialize(ConfigurableApplicationContext context) {
     }
 
     @Override
