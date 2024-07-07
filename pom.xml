@@ -36,9 +36,7 @@
     </properties>
 
     <modules>
-        <module>lcsc-wm-spring-profiler-attach</module>
         <module>lcsc-wm-spring-profiler-agent</module>
-
         <module>lcsc-wm-springboot-turbo</module>
 
     </modules>

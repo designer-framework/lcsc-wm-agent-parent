@@ -6,36 +6,23 @@
 
     <parent>
         <groupId>com.lcsc</groupId>
-        <artifactId>lcsc-wm-agent-parent</artifactId>
+        <artifactId>lcsc-wm-springboot-turbo</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>lcsc-wm-springboot-turbo</artifactId>
+    <artifactId>lcsc-wm-springboot-turbo-endpoint</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
 
     <properties>
     </properties>
 
-    <modules>
-        <module>lcsc-wm-springboot-turbo-common</module>
-        <module>lcsc-wm-springboot-turbo-loader</module>
-        <module>lcsc-wm-springboot-turbo-feign</module>
-        <module>lcsc-wm-springboot-turbo-apollo</module>
-        <module>lcsc-wm-springboot-turbo-swagger</module>
-        <module>lcsc-wm-springboot-turbo-endpoint</module>
-
-        <module>lcsc-wm-springboot-turbo-aggregation-starter</module>
-
-        <module>lcsc-wm-springboot-turbo-web-starter</module>
-    </modules>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-            <!--<optional>true</optional>
-            <scope>provided</scope>-->
+            <artifactId>spring-boot-starter-actuator</artifactId>
+            <optional>true</optional>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

@@ -1,10 +1,15 @@
 package io.github.linyimin0812.profiler.spring.analyzer.feign;
 
+import com.alibaba.bytekit.utils.ReflectionUtils;
 import io.github.linyimin0812.profiler.api.EventListener;
 import io.github.linyimin0812.profiler.api.event.AtEnterEvent;
+import io.github.linyimin0812.profiler.api.event.InvokeEvent;
 import io.github.linyimin0812.profiler.spring.AbstractMethodInvokeDetailListener;
+import lombok.SneakyThrows;
 import org.apache.commons.lang3.ArrayUtils;
 import org.kohsuke.MetaInfServices;
+
+import java.lang.reflect.Method;
 
 /**
  * @description:
@@ -22,7 +27,14 @@ public class OpenFeignAutoConfigurationListener extends AbstractMethodInvokeDeta
 
     @Override
     protected String listenMethodName() {
-        return "getObject";
+        return "getTarget";
+    }
+
+    @SneakyThrows
+    @Override
+    protected Object[] getArgs(InvokeEvent invokeEvent) {
+        Method method = ReflectionUtils.findMethod(invokeEvent.clazz, "getType");
+        return new Object[]{((Class<?>) method.invoke(invokeEvent.target)).getName()};
     }
 
     @Override

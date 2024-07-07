@@ -34,8 +34,12 @@ public abstract class AbstractInvokeDetailListener extends BaseEventListener {
     protected void atEnter(AtEnterEvent atEnterEvent) {
         INVOKE_DETAIL_MAP.put(
                 getEventUniqueKey(atEnterEvent)
-                , new MethodInvokeDetailExtend(doGetInvokeCountMethodAlias(atEnterEvent), atEnterEvent.args)
+                , new MethodInvokeDetailExtend(doGetInvokeCountMethodAlias(atEnterEvent), getArgs(atEnterEvent))
         );
+    }
+
+    protected Object[] getArgs(InvokeEvent invokeEvent) {
+        return invokeEvent.args;
     }
 
     private String doGetInvokeCountMethodAlias(AtEnterEvent atEnterEvent) {
